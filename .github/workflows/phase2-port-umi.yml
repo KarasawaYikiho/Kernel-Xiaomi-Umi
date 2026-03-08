@@ -86,6 +86,8 @@ jobs:
             done < artifacts/target_dtb_manifest.txt
           fi
 
+          python3 tools/porting/dtb_postcheck.py || true
+
           # fallback 1: strict umi/xiaomi/sm8250 path matching
           if [ ! -s artifacts/umi_primary_dtb_paths.txt ]; then
             grep -Ei '/.*(sm8250-xiaomi|umi-sm8250|xiaomi-sm8250-common).*(\.dtb|\.dtbo)$' artifacts/all_dtb_paths.txt \
