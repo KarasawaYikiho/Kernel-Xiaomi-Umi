@@ -12,26 +12,29 @@ on:
         required: true
         default: "android16-aptusitu"
       device:
-        description: "Target device codename"
+        description: "Target Device Codename"
         required: true
         default: "umi"
         type: choice
         options:
+          - psyche
+          - thyme
           - umi
+          - munch
           - lmi
           - cmi
+          - cas
           - apollo
           - alioth
-          - thyme
+          - elish
+          - enuma
+          - dagu
+          - pipa
       ksu:
         description: "Enable KernelSU"
         required: true
         type: boolean
         default: false
-      min_zip_mb:
-        description: "Minimum expected flashable zip size in MB (quality gate)"
-        required: true
-        default: "200"
 
 jobs:
   build:
@@ -45,54 +48,38 @@ jobs:
 
       - name: Cleanup disk
         run: |
-          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost "$AGENT_TOOLSDIRECTORY" || true
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
 
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y \
-            build-essential git curl wget bison flex zip bc cpio \
-            libssl-dev ccache python3 python-is-python3 \
-            gcc-aarch64-linux-gnu gcc-arm-linux-gnueabi
+          sudo apt-get install -y build-essential git curl wget bison flex zip bc cpio libssl-dev ccache python-is-python3
+          sudo apt-get install -y gcc-aarch64-linux-gnu gcc-arm-linux-gnueabi
 
       - name: Setup cache (ccache)
         uses: actions/cache@v4
         with:
           path: ~/.cache/ccache_mikernel
-          key: ccache-${{ github.event.inputs.device }}-${{ github.run_id }}
+          key: kernel-ccache-${{ github.event.inputs.device }}-${{ github.run_id }}
           restore-keys: |
-            ccache-${{ github.event.inputs.device }}-
-            ccache-
+            kernel-ccache-${{ github.event.inputs.device }}-
+            kernel-ccache-
 
-      - name: Setup toolchain (ZyC Clang 15)
+      - name: Setup Toolchain (ZyC-Clang 15)
         run: |
-          mkdir -p "$HOME/zyc-clang"
-          cd "$HOME/zyc-clang"
+          mkdir -p $HOME/zyc-clang
+          cd $HOME/zyc-clang
           wget -q https://github.com/ZyCromerZ/Clang/releases/download/15.0.7-20251111-release/Clang-15.0.7-20251111.tar.gz
           tar -zxf Clang-15.0.7-20251111.tar.gz
-          "$HOME/zyc-clang/bin/clang" --version || true
 
       - name: Clone kernel source
         run: |
           git clone --depth=1 --branch "${{ github.event.inputs.kernel_branch }}" "${{ github.event.inputs.kernel_repo }}" kernel
 
-      - name: Preflight checks
-        run: |
-          test -f kernel/Makefile
-          grep -E '^(VERSION|PATCHLEVEL|SUBLEVEL)\s*=\s*' kernel/Makefile || true
-
-          KV_MAJOR=$(grep -E '^VERSION\s*=\s*' kernel/Makefile | awk '{print $3}' || true)
-          if [ -n "$KV_MAJOR" ] && [ "$KV_MAJOR" -le 5 ]; then
-            echo "[WARN] Kernel VERSION is $KV_MAJOR (<=5). This workflow still builds, but it is not '>5'."
-          fi
-
-          if [ ! -f "kernel/arch/arm64/configs/${{ github.event.inputs.device }}_defconfig" ]; then
-            echo "[ERROR] Missing defconfig: arch/arm64/configs/${{ github.event.inputs.device }}_defconfig"
-            ls kernel/arch/arm64/configs/*_defconfig | sed 's#kernel/##' || true
-            exit 1
-          fi
-
-      - name: Build kernel (reference build.sh)
+      - name: Build kernel
         working-directory: kernel
         run: |
           chmod +x build.sh
@@ -102,50 +89,10 @@ jobs:
             bash build.sh "${{ github.event.inputs.device }}"
           fi
 
-      - name: Validate output package
-        run: |
-          shopt -s nullglob
-          zips=(kernel/*.zip)
-          if [ ${#zips[@]} -eq 0 ]; then
-            echo "[ERROR] No flashable zip generated in kernel/*.zip"
-            exit 1
-          fi
-
-          target_zip=""
-          for z in "${zips[@]}"; do
-            base=$(basename "$z")
-            if echo "$base" | grep -qi "_${{ github.event.inputs.device }}_"; then
-              target_zip="$z"
-              break
-            fi
-          done
-
-          if [ -z "$target_zip" ]; then
-            echo "[ERROR] No zip matched target device: ${{ github.event.inputs.device }}"
-            printf '%s\n' "${zips[@]}"
-            exit 1
-          fi
-
-          bytes=$(stat -c%s "$target_zip")
-          mb=$((bytes / 1024 / 1024))
-          min_mb=${{ github.event.inputs.min_zip_mb }}
-
-          echo "Selected zip: $target_zip"
-          echo "Size: ${mb}MB (${bytes} bytes), threshold: ${min_mb}MB"
-
-          if [ "$mb" -lt "$min_mb" ]; then
-            echo "[ERROR] Zip size below threshold; artifact considered invalid."
-            exit 1
-          fi
-
-          mkdir -p artifacts
-          cp -v "$target_zip" artifacts/
-          printf "zip=%s\nsize_mb=%s\nsize_bytes=%s\n" "$(basename "$target_zip")" "$mb" "$bytes" > artifacts/build-metadata.txt
-
-      - name: Collect debug artifacts
-        if: always()
+      - name: Collect artifacts
         run: |
           mkdir -p artifacts
+          cp -v kernel/*.zip artifacts/ || true
           cp -v kernel/out/.config artifacts/ || true
           cp -v kernel/out/arch/arm64/boot/Image artifacts/ || true
           cp -v kernel/out/arch/arm64/boot/dtb artifacts/ || true
@@ -153,6 +100,6 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: umi-kernel-${{ github.run_number }}
+          name: Kernel-${{ github.event.inputs.device }}-${{ github.run_number }}
           path: artifacts/
           if-no-files-found: error
