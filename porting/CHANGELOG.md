@@ -24,6 +24,8 @@
 - `build_phase2_report.py` 汇总新增 `defconfig_rc/build_rc` 与产物完整性状态，单文件报告可直接判断编译退出与产物缺失。
 - 新增 `tools/porting/suggest_next_focus.py`，基于 `phase2-report.txt` 自动给出下一轮优化方向（build/dtb/packaging/请求验证）。
 - `phase2-port-umi.yml` 接入 `next-focus` 生成步骤，README 同步增加产物阅读入口。
+- 新增 `tools/porting/extract_build_errors.py`，从 `make-defconfig.log` / `make-build.log` 提取错误线索并输出 `build-error-summary.txt`。
+- workflow 接入错误摘要步骤，单次运行可更快定位失败原因。
 - 构建步骤新增 `build-exit.txt` 与 `make-defconfig.log` / `make-build.log` 输出：即使构建失败也可在同次运行产物中直接定位失败阶段。
 
 ## 2026-03-08
