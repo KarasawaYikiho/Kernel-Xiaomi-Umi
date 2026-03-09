@@ -27,10 +27,6 @@ on:
         description: "device codename"
         required: true
         default: "umi"
-      quality_gate_mode:
-        description: "quality gate mode: warn | strict"
-        required: true
-        default: "warn"
 
 jobs:
   port-and-build:
@@ -223,7 +219,7 @@ jobs:
         if: always()
         run: |
           chmod +x tools/porting/run_postprocess_suite.sh
-          ./tools/porting/run_postprocess_suite.sh "${{ github.event.inputs.quality_gate_mode }}"
+          ./tools/porting/run_postprocess_suite.sh
 
       - name: Upload artifacts
         if: always()

@@ -43,7 +43,6 @@ Inputs:
 - `target_repo`
 - `target_branch`
 - `device` (default: `umi`)
-- `quality_gate_mode` (`warn` | `strict`, default: `warn`)
 
 ## Key Scripts
 
@@ -54,7 +53,7 @@ Inputs:
 - `tools/porting/evaluate_artifact.py` — flash-readiness heuristic
 - `tools/porting/build_phase2_report.py` — consolidated phase2 summary
 - `tools/porting/README.md` — full script index and execution order
-- `tools/porting/run_postprocess_suite.sh` — one-shot postprocess + quality gate orchestrator
+- `tools/porting/run_postprocess_suite.sh` — one-shot postprocess orchestrator
 
 ## Artifact Quick Read (Phase2)
 
@@ -76,7 +75,6 @@ After each `phase2-port-umi.yml` run, check in order:
 - `artifacts/phase2-metrics.json` (structured metrics for automation/dashboard)
 - `artifacts/status-badge-line.txt` (one-line status snapshot)
 - `artifacts/artifact-sha256.txt` (sha256 checksums for uploaded artifacts)
-- `artifacts/quality-gate.txt` (hard-fail / warn gate summary)
 
 ## Repository Layout
 

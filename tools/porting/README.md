@@ -26,7 +26,6 @@ This directory contains the automation chain used by `phase2-port-umi.yml`.
    - `collect_metrics_json.py`
    - `build_status_badge_line.py`
    - `build_artifact_checksums.py`
-   - `enforce_quality_gates.py` (quality gates: hard-fail/warn)
 
 ## Script Categories
 
@@ -35,7 +34,7 @@ This directory contains the automation chain used by `phase2-port-umi.yml`.
 - **Readiness/reporting:** `evaluate_artifact.py`, `build_phase2_report.py`, `validate_phase2_report.py`
 - **CI artifact UX:** `build_artifact_index.py`, `summarize_artifacts_markdown.py`, `build_status_badge_line.py`, `build_artifact_checksums.py`
 - **Automation metrics:** `collect_metrics_json.py`, `check_artifact_completeness.py`, `suggest_next_focus.py`, `extract_build_errors.py`
-- **Postprocess orchestration:** `run_postprocess_suite.sh` (runs all post-build reporting/gate scripts in CI)
+- **Postprocess orchestration:** `run_postprocess_suite.sh` (runs post-build reporting scripts in CI)
 
 ## Local Dry-Run Notes
 
