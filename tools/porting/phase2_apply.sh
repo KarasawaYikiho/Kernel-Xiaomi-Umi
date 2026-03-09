@@ -151,8 +151,25 @@ if [[ "$copied" -eq 0 ]]; then
   rm -f "$PORT_DIR/copied_dts.txt"
 fi
 
+# 3) dt-bindings header sync (for migrated dts includes)
+SRC_BIND="$SRC_DIR/include/dt-bindings"
+DST_BIND="$DST_DIR/include/dt-bindings"
+bind_copied=0
+
+if [[ -d "$SRC_BIND" ]]; then
+  while IFS= read -r h; do
+    [[ -f "$h" ]] || continue
+    rel="${h#$SRC_BIND/}"
+    dst="$DST_BIND/$rel"
+    mkdir -p "$(dirname "$dst")"
+    cp -f "$h" "$dst"
+    bind_copied=$((bind_copied+1))
+  done < <(find "$SRC_BIND" -type f \( -name 'qcom*.h' -o -name '*kona*.h' -o -name '*sm8250*.h' \))
+fi
+
 log "seed dts count: $seed_count"
 log "dts/dtsi copied count: $copied (dts=$copied_dts, dtsi=$copied_dtsi)"
+log "dt-bindings headers copied: $bind_copied"
 
 {
   echo "device=$DEVICE"
@@ -162,6 +179,7 @@ log "dts/dtsi copied count: $copied (dts=$copied_dts, dtsi=$copied_dtsi)"
   echo "dts_copied=$copied"
   echo "dts_only_copied=$copied_dts"
   echo "dtsi_only_copied=$copied_dtsi"
+  echo "dt_bindings_copied=$bind_copied"
 } > "$PORT_DIR/summary.txt"
 
 log "phase2 apply done"

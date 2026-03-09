@@ -24,9 +24,9 @@ if [ -s artifacts/target_dtb_manifest.txt ]; then
   while IFS= read -r dtb; do
     [ -n "$dtb" ] || continue
 
-    # try multiple canonical target forms for better kernel-tree compatibility
+    # prefer qcom/<dtb> target form used by current target tree
     ok=1
-    for t in "$dtb" "qcom/$dtb" "arch/arm64/boot/dts/qcom/$dtb"; do
+    for t in "qcom/$dtb" "$dtb"; do
       make -C target O=$PWD/out LLVM=1 LLVM_IAS=1 "$t" >> artifacts/make-target-dtbs.log 2>&1
       r=$?
       if [ "$r" -eq 0 ]; then
