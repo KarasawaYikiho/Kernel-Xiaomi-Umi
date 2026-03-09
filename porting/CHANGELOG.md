@@ -14,6 +14,7 @@
 - 新增仓库级 `.gitignore`（Python `__pycache__` / `*.pyc` 等），减少本地调试产生的无关变更噪音。
 - 新增 `tools/porting/build_phase2_report.py`，汇总 `summary/pack-info/flash-readiness/dtb-postcheck/anykernel-info` 为单文件 `artifacts/phase2-report.txt`。
 - `phase2-port-umi.yml` 增加“Generate consolidated phase2 report”步骤，单次 Action 即可直接读取关键结论。
+- README 新增“Phase2 产物速读”，固定优先查看的关键产物路径，减少人工定位时间。
 
 ## 2026-03-08
 - 初始化 5+ 移植工程骨架。

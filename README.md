@@ -30,3 +30,11 @@ Workflow：`.github/workflows/build-umi-kernel.yml`
 - `android16-aptusitu`
 - `umi`
 - `ksu=false`
+
+## Phase2 产物速读
+
+`phase2-port-umi.yml` 每次运行后可优先查看：
+- `artifacts/phase2-report.txt`（总览）
+- `artifacts/flash-readiness.txt`（是否达到 candidate）
+- `artifacts/dtb-postcheck.txt`（manifest 命中率）
+- `artifacts/anykernel-info.txt`（AnyKernel 打包是否成功）
