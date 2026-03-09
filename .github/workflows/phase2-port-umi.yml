@@ -60,23 +60,8 @@ jobs:
         env:
           ARCH: arm64
         run: |
-          mkdir -p out artifacts
-          set +e
-          make -C target O=$PWD/out LLVM=1 LLVM_IAS=1 "${{ github.event.inputs.device }}_defconfig" > artifacts/make-defconfig.log 2>&1
-          rc1=$?
-          make -C target O=$PWD/out LLVM=1 LLVM_IAS=1 -j"$(nproc)" Image.gz dtbs modules > artifacts/make-build.log 2>&1
-          rc2=$?
-          set -e
-
-          {
-            echo "defconfig_rc=$rc1"
-            echo "build_rc=$rc2"
-          } > artifacts/build-exit.txt
-
-          # fail step when build stage failed, while keeping logs for later artifact upload
-          if [ "$rc1" -ne 0 ] || [ "$rc2" -ne 0 ]; then
-            exit 1
-          fi
+          chmod +x tools/porting/run_phase2_build.sh
+          ./tools/porting/run_phase2_build.sh "${{ github.event.inputs.device }}"
 
       - name: Collect artifacts + umi-focused package
         if: always()
@@ -98,19 +83,17 @@ jobs:
       - name: Write run metadata
         if: always()
         run: |
-          mkdir -p artifacts
-          {
-            echo "workflow=phase2-port-umi"
-            echo "run_id=${{ github.run_id }}"
-            echo "run_number=${{ github.run_number }}"
-            echo "sha=${{ github.sha }}"
-            echo "ref=${{ github.ref }}"
-            echo "device=${{ github.event.inputs.device }}"
-            echo "source_repo=${{ github.event.inputs.source_repo }}"
-            echo "source_branch=${{ github.event.inputs.source_branch }}"
-            echo "target_repo=${{ github.event.inputs.target_repo }}"
-            echo "target_branch=${{ github.event.inputs.target_branch }}"
-          } > artifacts/run-meta.txt
+          chmod +x tools/porting/write_run_meta.sh
+          ./tools/porting/write_run_meta.sh \
+            "${{ github.run_id }}" \
+            "${{ github.run_number }}" \
+            "${{ github.sha }}" \
+            "${{ github.ref }}" \
+            "${{ github.event.inputs.device }}" \
+            "${{ github.event.inputs.source_repo }}" \
+            "${{ github.event.inputs.source_branch }}" \
+            "${{ github.event.inputs.target_repo }}" \
+            "${{ github.event.inputs.target_branch }}"
 
       - name: Run postprocess suite
         if: always()

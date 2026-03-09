@@ -6,21 +6,17 @@ This directory contains the automation chain used by `phase2-port-umi.yml`.
 
 1. `phase2_apply.sh`  
    - Migrates `umi_defconfig` and selected DTS/DTSI (include-aware BFS copy).
-2. `build_dtb_manifest.py`  
-   - Generates `artifacts/target_dtb_manifest.txt` from migrated DTS list.
-3. `dtb_postcheck.py`  
-   - Computes hit/miss against built DTB/DTBO outputs.
-4. `analyze_dtb_miss.py`  
-   - Buckets DTB misses for diagnosis.
-5. `evaluate_artifact.py`  
-   - Emits flash-readiness hints.
-6. `build_phase2_report.py`  
-   - Generates `artifacts/phase2-report.txt`.
-7. `collect_phase2_artifacts.sh`
+2. `run_phase2_build.sh`
+   - Runs defconfig/build and writes `artifacts/build-exit.txt` + make logs.
+3. `collect_phase2_artifacts.sh`
    - Collects build outputs, resolves primary DTB candidates, packages umi bundle, and writes flash-readiness inputs.
-8. `build_anykernel_candidate.sh`
+4. `build_anykernel_candidate.sh`
    - Packages AnyKernel3 candidate zip and writes `artifacts/anykernel-info.txt`.
-9. Post-processing suite:
+5. `build_phase2_report.py`  
+   - Generates `artifacts/phase2-report.txt`.
+6. `write_run_meta.sh`
+   - Writes normalized workflow/run/input metadata to `artifacts/run-meta.txt`.
+7. Post-processing suite:
    - `check_artifact_completeness.py`
    - `suggest_next_focus.py`
    - `extract_build_errors.py`
@@ -38,8 +34,10 @@ This directory contains the automation chain used by `phase2-port-umi.yml`.
 - **Readiness/reporting:** `evaluate_artifact.py`, `build_phase2_report.py`, `validate_phase2_report.py`
 - **CI artifact UX:** `build_artifact_index.py`, `summarize_artifacts_markdown.py`, `build_status_badge_line.py`, `build_artifact_checksums.py`
 - **Automation metrics:** `collect_metrics_json.py`, `check_artifact_completeness.py`, `suggest_next_focus.py`, `extract_build_errors.py`
+- **Build orchestration:** `run_phase2_build.sh` (defconfig/build attempt + exit snapshot)
 - **Build artifact orchestration:** `collect_phase2_artifacts.sh` (collect/package primary artifacts after build)
 - **AnyKernel packaging orchestration:** `build_anykernel_candidate.sh` (builds candidate AnyKernel zip + diagnostics)
+- **Run metadata orchestration:** `write_run_meta.sh` (records run/input metadata)
 - **Postprocess orchestration:** `run_postprocess_suite.sh` (runs post-build reporting scripts in CI)
 
 ## Local Dry-Run Notes

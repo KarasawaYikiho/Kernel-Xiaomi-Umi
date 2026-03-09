@@ -66,8 +66,10 @@ Inputs:
 - `tools/porting/evaluate_artifact.py` — flash-readiness heuristic
 - `tools/porting/build_phase2_report.py` — consolidated phase2 summary
 - `tools/porting/README.md` — full script index and execution order
+- `tools/porting/run_phase2_build.sh` — kernel build orchestrator (defconfig/build + exit snapshot)
 - `tools/porting/collect_phase2_artifacts.sh` — artifact collection + umi-focused packaging orchestrator
 - `tools/porting/build_anykernel_candidate.sh` — AnyKernel candidate packaging orchestrator
+- `tools/porting/write_run_meta.sh` — run metadata writer
 - `tools/porting/run_postprocess_suite.sh` — one-shot postprocess orchestrator
 
 ## Artifact Quick Read (Phase2)
