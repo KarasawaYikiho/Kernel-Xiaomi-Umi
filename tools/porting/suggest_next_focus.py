@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+from pathlib import Path
+
+ART = Path("artifacts")
+OUT = ART / "next-focus.txt"
+
+
+def parse_kv(path: Path) -> dict[str, str]:
+    kv: dict[str, str] = {}
+    if not path.exists():
+        return kv
+    for line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
+        if "=" in line:
+            k, v = line.split("=", 1)
+            kv[k.strip()] = v.strip()
+    return kv
+
+
+def main() -> int:
+    ART.mkdir(parents=True, exist_ok=True)
+
+    report = parse_kv(ART / "phase2-report.txt")
+    flash = report.get("flash_status", "unknown")
+    anyk = report.get("anykernel_ok", "no")
+    hit_ratio = float(report.get("manifest_hit_ratio", "0") or 0)
+    build_rc = report.get("build_rc", "n/a")
+
+    focus = "collect-more-data"
+    reason = "default"
+
+    if build_rc not in ("0", "n/a"):
+        focus = "fix-build-errors"
+        reason = "build_failed"
+    elif flash == "candidate" and anyk != "yes":
+        focus = "fix-anykernel-packaging"
+        reason = "candidate_without_anykernel"
+    elif flash == "candidate" and anyk == "yes":
+        focus = "request-action-validation"
+        reason = "candidate_and_packaging_ok"
+    elif hit_ratio < 0.35:
+        focus = "improve-dtb-manifest-mapping"
+        reason = "low_manifest_hit_ratio"
+
+    OUT.write_text(
+        "\n".join([
+            f"focus={focus}",
+            f"reason={reason}",
+            f"flash_status={flash}",
+            f"anykernel_ok={anyk}",
+            f"manifest_hit_ratio={hit_ratio:.3f}",
+            f"build_rc={build_rc}",
+        ]) + "\n",
+        encoding="utf-8",
+    )
+    print(f"wrote {OUT}: {focus}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

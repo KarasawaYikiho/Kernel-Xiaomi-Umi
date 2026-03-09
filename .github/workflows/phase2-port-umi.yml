@@ -215,6 +215,11 @@ jobs:
         run: |
           python3 tools/porting/check_artifact_completeness.py || true
 
+      - name: Suggest next focus
+        if: always()
+        run: |
+          python3 tools/porting/suggest_next_focus.py || true
+
       - name: Upload artifacts
         if: always()
         uses: actions/upload-artifact@v4

@@ -22,6 +22,8 @@
 - 新增 `tools/porting/check_artifact_completeness.py`，输出 `artifacts/artifact-completeness.txt` 校验关键产物完整性。
 - `phase2-port-umi.yml` 接入 completeness 检查步骤，README 同步补充优先查看路径。
 - `build_phase2_report.py` 汇总新增 `defconfig_rc/build_rc` 与产物完整性状态，单文件报告可直接判断编译退出与产物缺失。
+- 新增 `tools/porting/suggest_next_focus.py`，基于 `phase2-report.txt` 自动给出下一轮优化方向（build/dtb/packaging/请求验证）。
+- `phase2-port-umi.yml` 接入 `next-focus` 生成步骤，README 同步增加产物阅读入口。
 - 构建步骤新增 `build-exit.txt` 与 `make-defconfig.log` / `make-build.log` 输出：即使构建失败也可在同次运行产物中直接定位失败阶段。
 
 ## 2026-03-08

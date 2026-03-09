@@ -65,6 +65,7 @@ After each `phase2-port-umi.yml` run, check in order:
 - `artifacts/dtb-postcheck.txt`
 - `artifacts/dtb-miss-analysis.txt`
 - `artifacts/anykernel-info.txt`
+- `artifacts/next-focus.txt` (recommended next optimization direction)
 
 ## Repository Layout
 
