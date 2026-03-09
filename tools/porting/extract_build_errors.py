@@ -4,7 +4,7 @@ import re
 
 ART = Path("artifacts")
 OUT = ART / "build-error-summary.txt"
-LOGS = [ART / "make-defconfig.log", ART / "make-build.log"]
+LOGS = [ART / "make-defconfig.log", ART / "make-build.log", ART / "make-dtbs.log"]
 
 ERR_PAT = re.compile(r"(error:|undefined reference|No rule to make target|fatal error:)", re.I)
 

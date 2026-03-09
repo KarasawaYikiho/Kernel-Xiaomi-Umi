@@ -24,13 +24,17 @@ def main() -> int:
     anyk = report.get("anykernel_ok", "no")
     hit_ratio = float(report.get("manifest_hit_ratio", "0") or 0)
     build_rc = report.get("build_rc", "n/a")
+    dtbs_rc = report.get("dtbs_rc", "n/a")
 
     focus = "collect-more-data"
     reason = "default"
 
     if build_rc not in ("0", "n/a"):
         focus = "fix-build-errors"
-        reason = "build_failed"
+        reason = "core_build_failed"
+    elif dtbs_rc not in ("0", "n/a"):
+        focus = "fix-dtb-errors"
+        reason = "dtb_build_failed"
     elif flash == "candidate" and anyk != "yes":
         focus = "fix-anykernel-packaging"
         reason = "candidate_without_anykernel"
@@ -49,6 +53,7 @@ def main() -> int:
             f"anykernel_ok={anyk}",
             f"manifest_hit_ratio={hit_ratio:.3f}",
             f"build_rc={build_rc}",
+            f"dtbs_rc={dtbs_rc}",
         ]) + "\n",
         encoding="utf-8",
     )

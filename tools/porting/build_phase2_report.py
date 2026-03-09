@@ -43,6 +43,7 @@ def main() -> int:
         f"device={pack.get('device', summary.get('device', 'unknown'))}",
         f"defconfig_rc={bexit.get('defconfig_rc', 'n/a')}",
         f"build_rc={bexit.get('build_rc', 'n/a')}",
+        f"dtbs_rc={bexit.get('dtbs_rc', 'n/a')}",
         f"dts_copied={summary.get('dts_copied', '0')}",
         f"dts_only_copied={summary.get('dts_only_copied', '0')}",
         f"dtsi_only_copied={summary.get('dtsi_only_copied', '0')}",
