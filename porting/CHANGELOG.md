@@ -11,6 +11,7 @@
 - AnyKernel 候选打包新增 `artifacts/anykernel-info.txt` 诊断输出（是否成功、是否包含 Image.gz/dtb、dtb 来源路径），便于单次 Action 后快速判断失败点。
 - 优化 `build_dtb_manifest.py`：增加 umi 优先级排序（`sm8250-xiaomi-umi*` > `umi-sm8250*` > `xiaomi-sm8250-common*`），提升首选 dtb 命中概率。
 - 优化 `dtb_postcheck.py`：新增 `hit_ratio` 指标，便于单次构建后快速评估 manifest 命中质量趋势。
+- 新增仓库级 `.gitignore`（Python `__pycache__` / `*.pyc` 等），减少本地调试产生的无关变更噪音。
 
 ## 2026-03-08
 - 初始化 5+ 移植工程骨架。
