@@ -58,6 +58,8 @@ Inputs:
 After each `phase2-port-umi.yml` run, check in order:
 - `artifacts/phase2-report.txt` (single-file summary)
 - `artifacts/run-meta.txt` (run inputs + revision metadata)
+- `artifacts/build-exit.txt` (`defconfig_rc` / `build_rc`)
+- `artifacts/make-defconfig.log` / `artifacts/make-build.log`
 - `artifacts/flash-readiness.txt`
 - `artifacts/dtb-postcheck.txt`
 - `artifacts/dtb-miss-analysis.txt`

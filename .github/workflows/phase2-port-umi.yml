@@ -55,9 +55,23 @@ jobs:
         env:
           ARCH: arm64
         run: |
-          mkdir -p out
-          make -C target O=$PWD/out LLVM=1 LLVM_IAS=1 "${{ github.event.inputs.device }}_defconfig"
-          make -C target O=$PWD/out LLVM=1 LLVM_IAS=1 -j"$(nproc)" Image.gz dtbs modules
+          mkdir -p out artifacts
+          set +e
+          make -C target O=$PWD/out LLVM=1 LLVM_IAS=1 "${{ github.event.inputs.device }}_defconfig" > artifacts/make-defconfig.log 2>&1
+          rc1=$?
+          make -C target O=$PWD/out LLVM=1 LLVM_IAS=1 -j"$(nproc)" Image.gz dtbs modules > artifacts/make-build.log 2>&1
+          rc2=$?
+          set -e
+
+          {
+            echo "defconfig_rc=$rc1"
+            echo "build_rc=$rc2"
+          } > artifacts/build-exit.txt
+
+          # fail step when build stage failed, while keeping logs for later artifact upload
+          if [ "$rc1" -ne 0 ] || [ "$rc2" -ne 0 ]; then
+            exit 1
+          fi
 
       - name: Collect artifacts + umi-focused package
         if: always()
