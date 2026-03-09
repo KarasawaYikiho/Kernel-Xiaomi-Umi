@@ -210,6 +210,11 @@ jobs:
             echo "target_branch=${{ github.event.inputs.target_branch }}"
           } > artifacts/run-meta.txt
 
+      - name: Check artifact completeness
+        if: always()
+        run: |
+          python3 tools/porting/check_artifact_completeness.py || true
+
       - name: Upload artifacts
         if: always()
         uses: actions/upload-artifact@v4

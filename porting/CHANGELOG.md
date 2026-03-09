@@ -19,6 +19,8 @@
 - 新增 `tools/porting/analyze_dtb_miss.py`，对 `dtb-postcheck` 的 miss 列表做桶化统计，输出 `artifacts/dtb-miss-analysis.txt`。
 - `phase2-port-umi.yml` 接入 `analyze_dtb_miss.py`，并在 `phase2-report.txt` 汇总 `miss_bucket_total/miss_top_buckets`，便于下轮定向补齐。
 - `phase2-port-umi.yml` 新增 `artifacts/run-meta.txt`（run_id/run_number/sha/ref + 输入参数快照），便于跨运行对比与回溯。
+- 新增 `tools/porting/check_artifact_completeness.py`，输出 `artifacts/artifact-completeness.txt` 校验关键产物完整性。
+- `phase2-port-umi.yml` 接入 completeness 检查步骤，README 同步补充优先查看路径。
 - 构建步骤新增 `build-exit.txt` 与 `make-defconfig.log` / `make-build.log` 输出：即使构建失败也可在同次运行产物中直接定位失败阶段。
 
 ## 2026-03-08
