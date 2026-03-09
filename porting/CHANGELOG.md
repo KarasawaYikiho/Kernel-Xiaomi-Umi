@@ -27,6 +27,8 @@
 - 新增 `tools/porting/extract_build_errors.py`，从 `make-defconfig.log` / `make-build.log` 提取错误线索并输出 `build-error-summary.txt`。
 - workflow 接入错误摘要步骤，单次运行可更快定位失败原因。
 - 新增 `tools/porting/build_artifact_index.py`，输出 `artifacts/artifact-index.txt`（文件清单+大小），便于核对上传产物完整性与体积变化。
+- 新增 `tools/porting/summarize_artifacts_markdown.py`，输出 `artifacts/artifact-summary.md`（面向人工阅读的简明摘要）。
+- workflow 接入 markdown 摘要生成步骤，README 补充对应产物入口。
 - 构建步骤新增 `build-exit.txt` 与 `make-defconfig.log` / `make-build.log` 输出：即使构建失败也可在同次运行产物中直接定位失败阶段。
 
 ## 2026-03-08

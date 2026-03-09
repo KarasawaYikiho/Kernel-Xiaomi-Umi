@@ -68,6 +68,7 @@ After each `phase2-port-umi.yml` run, check in order:
 - `artifacts/next-focus.txt` (recommended next optimization direction)
 - `artifacts/build-error-summary.txt` (condensed error clues from make logs)
 - `artifacts/artifact-index.txt` (artifact list with file sizes)
+- `artifacts/artifact-summary.md` (human-friendly markdown summary)
 
 ## Repository Layout
 

@@ -230,6 +230,11 @@ jobs:
         run: |
           python3 tools/porting/build_artifact_index.py || true
 
+      - name: Build artifact markdown summary
+        if: always()
+        run: |
+          python3 tools/porting/summarize_artifacts_markdown.py || true
+
       - name: Upload artifacts
         if: always()
         uses: actions/upload-artifact@v4
