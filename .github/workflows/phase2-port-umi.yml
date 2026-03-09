@@ -245,6 +245,11 @@ jobs:
         run: |
           python3 tools/porting/collect_metrics_json.py || true
 
+      - name: Build status badge line
+        if: always()
+        run: |
+          python3 tools/porting/build_status_badge_line.py || true
+
       - name: Upload artifacts
         if: always()
         uses: actions/upload-artifact@v4

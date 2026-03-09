@@ -71,6 +71,7 @@ After each `phase2-port-umi.yml` run, check in order:
 - `artifacts/artifact-summary.md` (human-friendly markdown summary)
 - `artifacts/phase2-report-validate.txt` (schema/key presence check)
 - `artifacts/phase2-metrics.json` (structured metrics for automation/dashboard)
+- `artifacts/status-badge-line.txt` (one-line status snapshot)
 
 ## Repository Layout
 
