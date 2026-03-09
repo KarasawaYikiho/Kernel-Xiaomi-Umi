@@ -1,40 +1,73 @@
-# Xiaomi 10 (umi) 内核构建（GitHub Actions）
+# Kernel-Xiaomi-Umi
 
-已按参考仓库思路重建：
-- 参考来源：`SO-TS/android_kernel_xiaomi_sm8250`
-- 参考链接：https://github.com/SO-TS/android_kernel_xiaomi_sm8250
+Xiaomi 10 (umi) kernel build/porting orchestrator.
 
-## 流程说明
+This repository provides GitHub Actions workflows and helper scripts to:
+- build kernel artifacts in CI
+- run Phase2 porting steps from SO-TS 4.19 to a 5+ baseline
+- generate diagnostics and packaging candidates (including AnyKernel candidate zip)
 
-Workflow：`.github/workflows/build-umi-kernel.yml`
+## Reference
 
-当前为“参考式标准流程”（不含额外校验门禁）：
-1. GitHub Actions 云端编译
-2. 安装依赖 + 配置 ccache
-3. 下载 ZyC Clang 15
-4. 克隆目标内核仓库
-5. 调用 `build.sh` 进行构建（支持 `device` 和 `ksu`）
-6. 上传构建产物（zip + 关键调试文件）
+- Source reference: `SO-TS/android_kernel_xiaomi_sm8250`
+- URL: https://github.com/SO-TS/android_kernel_xiaomi_sm8250
 
-## 使用
+## Workflows
 
-在 Actions 手动触发 **Build Xiaomi 10 (umi) Kernel (Reference-style)**：
-- `kernel_repo`：内核 GitHub 地址
-- `kernel_branch`：分支
-- `device`：目标机型代号（默认 umi）
-- `ksu`：是否启用 KernelSU
+### 1) build-umi-kernel.yml
+Reference-style cloud build flow:
+1. install dependencies + setup ccache
+2. download ZyC Clang 15
+3. clone target kernel repo/branch
+4. run `build.sh` with selected `device` and optional `ksu`
+5. upload build artifacts
 
+Inputs:
+- `kernel_repo`
+- `kernel_branch`
+- `device` (default: `umi`)
+- `ksu` (default: `false`)
 
-默认参数：
-- `https://github.com/SO-TS/android_kernel_xiaomi_sm8250.git`
-- `android16-aptusitu`
-- `umi`
-- `ksu=false`
+### 2) phase2-port-umi.yml
+Phase2 migration + build attempt flow:
+1. clone source (4.19) and target (5+) trees
+2. apply `tools/porting/phase2_apply.sh`
+3. attempt target kernel build
+4. collect dtb diagnostics and umi-focused bundle
+5. generate AnyKernel candidate package
+6. generate consolidated report and upload artifacts
 
-## Phase2 产物速读
+Inputs:
+- `source_repo`
+- `source_branch`
+- `target_repo`
+- `target_branch`
+- `device` (default: `umi`)
 
-`phase2-port-umi.yml` 每次运行后可优先查看：
-- `artifacts/phase2-report.txt`（总览）
-- `artifacts/flash-readiness.txt`（是否达到 candidate）
-- `artifacts/dtb-postcheck.txt`（manifest 命中率）
-- `artifacts/anykernel-info.txt`（AnyKernel 打包是否成功）
+## Key Scripts
+
+- `tools/porting/phase2_apply.sh` — defconfig + include-aware dts/dtsi migration
+- `tools/porting/build_dtb_manifest.py` — derive target dtb manifest from migrated dts list
+- `tools/porting/dtb_postcheck.py` — hit/miss + hit_ratio stats for manifest mapping
+- `tools/porting/analyze_dtb_miss.py` — bucketized miss analysis
+- `tools/porting/evaluate_artifact.py` — flash-readiness heuristic
+- `tools/porting/build_phase2_report.py` — consolidated phase2 summary
+
+## Artifact Quick Read (Phase2)
+
+After each `phase2-port-umi.yml` run, check in order:
+- `artifacts/phase2-report.txt` (single-file summary)
+- `artifacts/flash-readiness.txt`
+- `artifacts/dtb-postcheck.txt`
+- `artifacts/dtb-miss-analysis.txt`
+- `artifacts/anykernel-info.txt`
+
+## Repository Layout
+
+- `.github/workflows/` — CI workflows
+- `tools/porting/` — migration/analysis tooling
+- `porting/` — plans, inventory, reports, changelog
+
+## License
+
+See `LICENSE`.
