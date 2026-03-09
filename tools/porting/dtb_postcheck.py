@@ -19,14 +19,20 @@ for name in wanted:
     found = any(p.endswith('/' + name) for p in all_set)
     (hit if found else miss).append(name)
 
+wanted_n = len(wanted)
+hit_n = len(hit)
+miss_n = len(miss)
+hit_ratio = (hit_n / wanted_n) if wanted_n else 0.0
+
 out.write_text(
     "\n".join([
-        f"wanted={len(wanted)}",
-        f"hit={len(hit)}",
-        f"miss={len(miss)}",
+        f"wanted={wanted_n}",
+        f"hit={hit_n}",
+        f"miss={miss_n}",
+        f"hit_ratio={hit_ratio:.3f}",
         "hit_names=" + (",".join(hit) if hit else ""),
         "miss_names=" + (",".join(miss) if miss else ""),
     ]) + "\n",
     encoding='utf-8'
 )
-print(f"wrote {out}")
+print(f"wrote {out} (hit_ratio={hit_ratio:.3f})")

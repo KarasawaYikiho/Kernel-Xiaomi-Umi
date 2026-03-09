@@ -1,5 +1,17 @@
 # Porting Changelog
 
+## 2026-03-09
+- Phase 2.9：在 `.github/workflows/phase2-port-umi.yml` 新增 `Build AnyKernel candidate zip` 步骤。
+- 当 `Image.gz` 存在时自动拉取 `AnyKernel3`，注入 `Image.gz`，并尝试附带首个 umi 相关 dtb 生成 `AnyKernel3-umi-candidate.zip`。
+- 该产物为候选刷机包（best-effort），用于推进“编译产出 + AnyKernel zip”目标的自动化闭环。
+- 按用户要求回退门禁机制：移除 `pre_action_gate.py` 及门禁相关 workflow 输入/步骤，恢复直接编译流程。
+- 优化 AnyKernel 候选打包步骤：克隆前清理 `anykernel3` 目录，避免工作目录残留影响产物一致性。
+- 收紧 `phase2_apply.sh` 的 dts 种子过滤黑名单（增加 `hdk/mtp/pdx/edo`），减少非目标板级误迁移。
+- `phase2_apply.sh` 的 `summary.txt` 新增拆分统计：`dts_only_copied` 与 `dtsi_only_copied`，便于后续定位 manifest 命中质量。
+- AnyKernel 候选打包新增 `artifacts/anykernel-info.txt` 诊断输出（是否成功、是否包含 Image.gz/dtb、dtb 来源路径），便于单次 Action 后快速判断失败点。
+- 优化 `build_dtb_manifest.py`：增加 umi 优先级排序（`sm8250-xiaomi-umi*` > `umi-sm8250*` > `xiaomi-sm8250-common*`），提升首选 dtb 命中概率。
+- 优化 `dtb_postcheck.py`：新增 `hit_ratio` 指标，便于单次构建后快速评估 manifest 命中质量趋势。
+
 ## 2026-03-08
 - 初始化 5+ 移植工程骨架。
 - 新增 `PORTING_PLAN.md`。

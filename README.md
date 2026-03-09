@@ -24,6 +24,7 @@ Workflow：`.github/workflows/build-umi-kernel.yml`
 - `device`：目标机型代号（默认 umi）
 - `ksu`：是否启用 KernelSU
 
+
 默认参数：
 - `https://github.com/SO-TS/android_kernel_xiaomi_sm8250.git`
 - `android16-aptusitu`

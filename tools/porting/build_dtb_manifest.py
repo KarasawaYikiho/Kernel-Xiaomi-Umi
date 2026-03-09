@@ -7,6 +7,11 @@ OUT = Path("artifacts/target_dtb_manifest.txt")
 
 ALLOW = re.compile(r"(sm8250-xiaomi|umi-sm8250|xiaomi-sm8250-common|umi|sm8250)", re.I)
 DENY = re.compile(r"(rumi|lumia|sony|hdk|mtp|edo|pdx)", re.I)
+PREFER = [
+    re.compile(r"^(sm8250-xiaomi-umi.*)\.dtb$", re.I),
+    re.compile(r"^(umi-sm8250.*)\.dtb$", re.I),
+    re.compile(r"^(xiaomi-sm8250-common.*)\.dtb$", re.I),
+]
 
 
 def to_dtb_name(path_str: str) -> str | None:
@@ -20,6 +25,13 @@ def to_dtb_name(path_str: str) -> str | None:
     if DENY.search(stem):
         return None
     return stem + '.dtb'
+
+
+def rank_name(name: str) -> int:
+    for i, p in enumerate(PREFER):
+        if p.search(name):
+            return i
+    return len(PREFER)
 
 
 def main():
@@ -42,6 +54,9 @@ def main():
         if n not in seen:
             seen.add(n)
             uniq.append(n)
+
+    # prefer umi-precise dtb names first, keep stable order inside each rank
+    uniq.sort(key=lambda x: (rank_name(x), x))
 
     OUT.write_text("\n".join(uniq) + ("\n" if uniq else ""), encoding="utf-8")
     print(f"wrote {OUT} ({len(uniq)} names)")

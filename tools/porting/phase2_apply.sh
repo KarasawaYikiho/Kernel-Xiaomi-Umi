@@ -130,7 +130,7 @@ for rel in "${SRC_ROOTS[@]}"; do
     b="$(basename "$f")"
 
     # strictly prefer Xiaomi SM8250/UMI family and avoid obvious false positives
-    if [[ "$b" =~ (sm8250|umi|xiaomi|kona|lmi|cmi|apollo|alioth|thyme) ]] && [[ ! "$b" =~ (rumi|lumia|sony) ]]; then
+    if [[ "$b" =~ (sm8250|umi|xiaomi|kona|lmi|cmi|apollo|alioth|thyme) ]] && [[ ! "$b" =~ (rumi|lumia|sony|hdk|mtp|pdx|edo) ]]; then
       echo "$f" >> "$PORT_DIR/seed_dts.txt"
       copy_with_includes "$f" "$sroot"
       seed_count=$((seed_count+1))
@@ -139,8 +139,12 @@ for rel in "${SRC_ROOTS[@]}"; do
 done
 
 copied=0
+copied_dts=0
+copied_dtsi=0
 if [[ -s "$PORT_DIR/copied_dts.txt" ]]; then
   copied=$(wc -l < "$PORT_DIR/copied_dts.txt" | tr -d ' ')
+  copied_dts=$(grep -Ec '\.dts$' "$PORT_DIR/copied_dts.txt" || true)
+  copied_dtsi=$(grep -Ec '\.dtsi$' "$PORT_DIR/copied_dts.txt" || true)
 fi
 
 if [[ "$copied" -eq 0 ]]; then
@@ -148,7 +152,7 @@ if [[ "$copied" -eq 0 ]]; then
 fi
 
 log "seed dts count: $seed_count"
-log "dts copied count: $copied"
+log "dts/dtsi copied count: $copied (dts=$copied_dts, dtsi=$copied_dtsi)"
 
 {
   echo "device=$DEVICE"
@@ -156,6 +160,8 @@ log "dts copied count: $copied"
   echo "dst_dts_root=$DST_ROOT"
   echo "seed_dts_count=$seed_count"
   echo "dts_copied=$copied"
+  echo "dts_only_copied=$copied_dts"
+  echo "dtsi_only_copied=$copied_dtsi"
 } > "$PORT_DIR/summary.txt"
 
 log "phase2 apply done"
