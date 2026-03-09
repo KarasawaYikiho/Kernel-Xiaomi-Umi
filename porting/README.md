@@ -10,7 +10,8 @@ This directory stores planning, baselines, and progress records for UMI porting.
 - `classification-phase1.md` — Phase 1 classification output
 - `inventory.json` — source/target capability inventory
 - `gap-report.md` — gap analysis summary
-- `CHANGELOG.md` — chronological change history
+- `CHANGELOG.md` — milestone-only change history (concise)
+- `CHANGELOG-archive-2026-03-09.md` — detailed archived bullets
 - `repo-deep-analysis-2026-03-09.md` — architecture/status deep-dive snapshot
 
 ## Suggested Reading Order
