@@ -5,18 +5,24 @@ all_paths = Path("artifacts/all_dtb_paths.txt")
 manifest = Path("artifacts/target_dtb_manifest.txt")
 out = Path("artifacts/dtb-postcheck.txt")
 
+def norm_path(s: str) -> str:
+    return s.replace('\\', '/').strip()
+
+
 all_set = set()
 if all_paths.exists():
-    all_set = {x.strip() for x in all_paths.read_text(encoding='utf-8', errors='ignore').splitlines() if x.strip()}
+    all_set = {norm_path(x) for x in all_paths.read_text(encoding='utf-8', errors='ignore').splitlines() if x.strip()}
 
 wanted = []
 if manifest.exists():
     wanted = [x.strip() for x in manifest.read_text(encoding='utf-8', errors='ignore').splitlines() if x.strip()]
 
+all_basenames = {p.rsplit('/', 1)[-1] for p in all_set}
+
 hit = []
 miss = []
 for name in wanted:
-    found = any(p.endswith('/' + name) for p in all_set)
+    found = (name in all_basenames) or any(p.endswith('/' + name) for p in all_set)
     (hit if found else miss).append(name)
 
 wanted_n = len(wanted)

@@ -40,6 +40,27 @@ set_kconfig_n() {
 # qcom-spmi-adc5 mismatch on current target baseline (undeclared ADC5_* identifiers)
 set_kconfig_n "CONFIG_QCOM_SPMI_ADC5"
 
+# 1.5) leds color-id compatibility patch (some 5+ bases miss LED_COLOR_ID_* defs)
+LED_CORE="$DST_DIR/drivers/leds/led-core.c"
+if [[ -f "$LED_CORE" ]] && grep -q "LED_COLOR_ID_MAX" "$LED_CORE"; then
+  if ! grep -q "dt-bindings/leds/common.h" "$LED_CORE"; then
+    sed -i '/^#include <linux\/leds.h>/a #include <dt-bindings/leds/common.h>' "$LED_CORE"
+  fi
+
+  if ! grep -q "OC_PHASE2_LED_COLOR_COMPAT" "$LED_CORE"; then
+    python3 - "$LED_CORE" <<'PY'
+from pathlib import Path
+p = Path(__import__('sys').argv[1])
+s = p.read_text(encoding='utf-8', errors='ignore')
+needle = '#include <dt-bindings/leds/common.h>\n'
+compat = '''\n#ifndef LED_COLOR_ID_MAX\n#define OC_PHASE2_LED_COLOR_COMPAT 1\nenum {\n\tLED_COLOR_ID_WHITE = 0,\n\tLED_COLOR_ID_RED,\n\tLED_COLOR_ID_GREEN,\n\tLED_COLOR_ID_BLUE,\n\tLED_COLOR_ID_AMBER,\n\tLED_COLOR_ID_VIOLET,\n\tLED_COLOR_ID_YELLOW,\n\tLED_COLOR_ID_IR,\n\tLED_COLOR_ID_MULTI,\n\tLED_COLOR_ID_RGB,\n\tLED_COLOR_ID_PURPLE,\n\tLED_COLOR_ID_ORANGE,\n\tLED_COLOR_ID_PINK,\n\tLED_COLOR_ID_CYAN,\n\tLED_COLOR_ID_LIME,\n\tLED_COLOR_ID_MAX,\n};\n#endif\n'''
+if needle in s and 'OC_PHASE2_LED_COLOR_COMPAT' not in s:
+    s = s.replace(needle, needle + compat, 1)
+    p.write_text(s, encoding='utf-8')
+PY
+  fi
+fi
+
 # 2) dts/dtsi migration (recursive + include-aware)
 SRC_ROOTS=(
   "arch/arm64/boot/dts/vendor/qcom"
