@@ -43,7 +43,7 @@ This provides a fast pass/fail + next-action loop.
 
 Reference-style cloud build flow:
 
-1. Install dependencies + setup ccache
+1. Install dependencies + setup ccache (including best-effort boot image tooling)
 2. Download ZyC Clang 15
 3. Clone target kernel repo/branch
 4. Run `build.sh` with selected device and optional KernelSU

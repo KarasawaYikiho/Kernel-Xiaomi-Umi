@@ -5,7 +5,7 @@ This directory contains the automation chain used by `phase2-port-umi.yml`.
 ## CI Pipeline Order
 
 1. `install_ci_deps.sh`
-   - Installs required CI packages for build and diagnostics.
+   - Installs required CI packages for build/diagnostics and best-effort boot image tooling (`mkbootimg`).
 2. `prepare_phase2_sources.sh`
    - Clones source and target trees into `source/` and `target/`.
 3. `check_target_kernel_version.sh`
