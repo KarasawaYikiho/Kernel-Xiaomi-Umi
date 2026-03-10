@@ -41,14 +41,17 @@ set_kconfig_n() {
 set_kconfig_n "CONFIG_QCOM_SPMI_ADC5"
 
 # 1.5) leds color-id compatibility patch (some 5+ bases miss LED_COLOR_ID_* defs)
-LED_CORE="$DST_DIR/drivers/leds/led-core.c"
-if [[ -f "$LED_CORE" ]] && grep -q "LED_COLOR_ID_MAX" "$LED_CORE"; then
-  if ! grep -q "dt-bindings/leds/common.h" "$LED_CORE"; then
-    sed -i '/^#include <linux\/leds.h>/a #include <dt-bindings/leds/common.h>' "$LED_CORE"
+patch_led_color_compat() {
+  local f="$1"
+  [[ -f "$f" ]] || return 0
+  grep -q "LED_COLOR_ID_MAX" "$f" || return 0
+
+  if ! grep -q "dt-bindings/leds/common.h" "$f"; then
+    sed -i '/^#include <linux\/leds.h>/a #include <dt-bindings/leds/common.h>' "$f"
   fi
 
-  if ! grep -q "OC_PHASE2_LED_COLOR_COMPAT" "$LED_CORE"; then
-    python3 - "$LED_CORE" <<'PY'
+  if ! grep -q "OC_PHASE2_LED_COLOR_COMPAT" "$f"; then
+    python3 - "$f" <<'PY'
 from pathlib import Path
 p = Path(__import__('sys').argv[1])
 s = p.read_text(encoding='utf-8', errors='ignore')
@@ -59,7 +62,10 @@ if needle in s and 'OC_PHASE2_LED_COLOR_COMPAT' not in s:
     p.write_text(s, encoding='utf-8')
 PY
   fi
-fi
+}
+
+patch_led_color_compat "$DST_DIR/drivers/leds/led-core.c"
+patch_led_color_compat "$DST_DIR/drivers/leds/led-class.c"
 
 # 2) dts/dtsi migration (recursive + include-aware)
 SRC_ROOTS=(
