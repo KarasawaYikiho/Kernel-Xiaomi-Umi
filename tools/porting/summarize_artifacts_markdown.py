@@ -34,6 +34,7 @@ def main() -> int:
         f"- Artifact Completeness: `{c.get('status', 'unknown')}`",
         f"- Runtime Ready: `{r.get('runtime_ready', 'no')}`",
         f"- Boot Image: `{r.get('bootimg_status', 'missing')}` ({r.get('bootimg_reason', 'n/a')})",
+        f"- Boot Image Build: `{r.get('bootimg_build_status', 'unknown')}` ({r.get('bootimg_build_reason', 'n/a')})",
         "",
         "## Next Focus",
         f"- Focus: `{n.get('focus', 'collect-more-data')}`",

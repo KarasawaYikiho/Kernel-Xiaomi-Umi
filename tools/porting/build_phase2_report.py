@@ -26,6 +26,7 @@ def main() -> int:
     anyk = parse_kv(ART / "anykernel-info.txt")
     anyk_val = parse_kv(ART / "anykernel-validate.txt")
     boot = parse_kv(ART / "bootimg-info.txt")
+    boot_build = parse_kv(ART / "bootimg-build.txt")
     missa = parse_kv(ART / "dtb-miss-analysis.txt")
     bexit = parse_kv(ART / "build-exit.txt")
     complete = parse_kv(ART / "artifact-completeness.txt")
@@ -83,6 +84,9 @@ def main() -> int:
         f"bootimg_size_bytes={boot.get('size_bytes', '0')}",
         f"bootimg_required_bytes={boot.get('required_bytes', '268435456')}",
         f"bootimg_size_match={boot.get('size_match', 'no')}",
+        f"bootimg_build_status={boot_build.get('status', 'unknown')}",
+        f"bootimg_build_reason={boot_build.get('reason', 'n/a')}",
+        f"bootimg_build_missing={boot_build.get('missing', '')}",
         f"miss_bucket_total={missa.get('bucket_total', '0')}",
         f"miss_top_buckets={missa.get('top_buckets', '')}",
         f"artifact_completeness={complete.get('status', 'unknown')}",

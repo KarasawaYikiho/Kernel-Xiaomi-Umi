@@ -18,6 +18,7 @@ OPTIONAL = [
     "AnyKernel3-umi-candidate.zip",
     "anykernel-validate.txt",
     "bootimg-info.txt",
+    "bootimg-build.txt",
     "action-validation-checklist.md",
 ]
 

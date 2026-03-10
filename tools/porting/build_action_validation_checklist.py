@@ -27,6 +27,8 @@ def main() -> int:
     next_action = report.get("next_action", "collect-more-data")
     runtime_ready = report.get("runtime_ready", "no")
     bootimg_status = report.get("bootimg_status", "missing")
+    bootimg_build_status = report.get("bootimg_build_status", "unknown")
+    bootimg_build_missing = report.get("bootimg_build_missing", "")
     bootimg_size = report.get("bootimg_size_bytes", "0")
     bootimg_required = report.get("bootimg_required_bytes", "268435456")
     blockers = []
@@ -42,6 +44,10 @@ def main() -> int:
         blockers.append(f"anykernel_validate_status={report.get('anykernel_validate_status', 'unknown')}")
     if bootimg_status != "ok":
         blockers.append(f"bootimg_status={bootimg_status}")
+    if bootimg_build_status not in ("ok", "unknown"):
+        blockers.append(f"bootimg_build_status={bootimg_build_status}")
+    if bootimg_build_missing:
+        blockers.append(f"bootimg_build_missing={bootimg_build_missing}")
 
     md = [
         "# Phase2 Runtime Validation Checklist",
@@ -52,6 +58,7 @@ def main() -> int:
         f"- next_action: `{next_action}`",
         f"- runtime_ready: `{runtime_ready}`",
         f"- bootimg_status: `{bootimg_status}`",
+        f"- bootimg_build_status: `{bootimg_build_status}`",
         f"- bootimg_size_bytes: `{bootimg_size}`",
         f"- bootimg_required_bytes: `{bootimg_required}`",
         "",

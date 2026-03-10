@@ -85,6 +85,12 @@ jobs:
           chmod +x tools/porting/build_anykernel_candidate.sh
           ./tools/porting/build_anykernel_candidate.sh
 
+      - name: Prepare release boot image (best effort)
+        if: always()
+        run: |
+          chmod +x tools/porting/prepare_release_bootimg.sh
+          ./tools/porting/prepare_release_bootimg.sh
+
       - name: Validate AnyKernel candidate structure
         if: always()
         run: |

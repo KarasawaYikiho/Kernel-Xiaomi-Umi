@@ -47,6 +47,9 @@ def main() -> int:
             "bootimg_reason": report.get("bootimg_reason", "n/a"),
             "bootimg_size_bytes": report.get("bootimg_size_bytes", "0"),
             "bootimg_required_bytes": report.get("bootimg_required_bytes", "268435456"),
+            "bootimg_build_status": report.get("bootimg_build_status", "unknown"),
+            "bootimg_build_reason": report.get("bootimg_build_reason", "n/a"),
+            "bootimg_build_missing": report.get("bootimg_build_missing", ""),
         },
         "report": {
             "next_action": report.get("next_action", "collect-more-data"),

@@ -18,7 +18,9 @@ This directory contains the automation chain used by `phase2-port-umi.yml`.
    - Collects build outputs, resolves primary DTB candidates, packages umi bundle, and writes flash-readiness inputs.
 7. `build_anykernel_candidate.sh`
    - Packages AnyKernel3 candidate zip and writes `artifacts/anykernel-info.txt`.
-8. `validate_anykernel_candidate.py`
+8. `prepare_release_bootimg.sh`
+   - Best-effort `boot.img` build stage; writes `artifacts/bootimg-build.txt` with explicit blockers if inputs are missing.
+9. `validate_anykernel_candidate.py`
    - Validates `AnyKernel3-umi-candidate.zip` structure and writes `artifacts/anykernel-validate.txt`.
 9. `build_phase2_report.py`  
    - Generates `artifacts/phase2-report.txt`.
@@ -59,6 +61,7 @@ This directory contains the automation chain used by `phase2-port-umi.yml`.
 - `runtime_ready`: coarse gate (`yes`/`no`) indicating whether device-side runtime validation should proceed
 - `anykernel_validate_status`: structure validation result for `AnyKernel3-umi-candidate.zip`
 - `bootimg_status`: release boot image readiness signal (`ok` / `missing` / `size_mismatch`)
+- `bootimg_build_status`: boot image build stage result (`ok` / `blocked` / `failed`)
 - `bootimg_required_bytes`: required boot image size (from workflow input, default `268435456`)
 - `action-validation-checklist.md`: now includes boot image status/size/required-size snapshot and blocker projection
 

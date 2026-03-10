@@ -1,0 +1,128 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Best-effort release boot.img preparation.
+# Requires kernel image + ramdisk + mkbootimg parameters.
+# Writes artifacts/bootimg-build.txt with explicit blockers when inputs are missing.
+
+ART=artifacts
+mkdir -p "$ART"
+OUT="$ART/bootimg-build.txt"
+
+kernel_path=""
+ramdisk_path="${BOOTIMG_RAMDISK_PATH:-}"
+dtb_path="${BOOTIMG_DTB_PATH:-}"
+mkbootimg_cmd=""
+
+# kernel
+if [[ -f out/arch/arm64/boot/Image.gz ]]; then
+  kernel_path="out/arch/arm64/boot/Image.gz"
+elif [[ -f out/arch/arm64/boot/Image ]]; then
+  kernel_path="out/arch/arm64/boot/Image"
+fi
+
+# ramdisk (mandatory for direct flashable boot.img)
+if [[ -z "$ramdisk_path" ]]; then
+  for p in \
+    "$ART/ramdisk.cpio.gz" \
+    "target/ramdisk.cpio.gz" \
+    "target/boot/ramdisk.cpio.gz"; do
+    [[ -f "$p" ]] && ramdisk_path="$p" && break
+  done
+fi
+
+# dtb (optional for newer header versions but preferred)
+if [[ -z "$dtb_path" && -s "$ART/umi_primary_dtb_paths.txt" ]]; then
+  cand="$(head -n1 "$ART/umi_primary_dtb_paths.txt" || true)"
+  [[ -f "$cand" ]] && dtb_path="$cand"
+fi
+
+# mkbootimg tool detection
+if command -v mkbootimg >/dev/null 2>&1; then
+  mkbootimg_cmd="mkbootimg"
+elif python3 - <<'PY'
+import importlib.util
+print('ok' if importlib.util.find_spec('mkbootimg') else 'no')
+PY
+then
+  if [[ "$(python3 - <<'PY'
+import importlib.util
+print('ok' if importlib.util.find_spec('mkbootimg') else 'no')
+PY
+)" == "ok" ]]; then
+    mkbootimg_cmd="python3 -m mkbootimg"
+  fi
+fi
+
+header_version="${BOOTIMG_HEADER_VERSION:-3}"
+base="${BOOTIMG_BASE:-0x00000000}"
+pagesize="${BOOTIMG_PAGESIZE:-4096}"
+cmdline="${BOOTIMG_CMDLINE:-}"
+
+missing=()
+[[ -n "$mkbootimg_cmd" ]] || missing+=("mkbootimg")
+[[ -n "$kernel_path" ]] || missing+=("kernel_image")
+[[ -n "$ramdisk_path" ]] || missing+=("ramdisk")
+
+if [[ ${#missing[@]} -gt 0 ]]; then
+  {
+    echo "status=blocked"
+    echo "reason=missing-inputs"
+    echo "missing=$(IFS=,; echo "${missing[*]}")"
+    echo "kernel_path=$kernel_path"
+    echo "ramdisk_path=$ramdisk_path"
+    echo "dtb_path=$dtb_path"
+    echo "mkbootimg_cmd=$mkbootimg_cmd"
+    echo "header_version=$header_version"
+    echo "base=$base"
+    echo "pagesize=$pagesize"
+  } > "$OUT"
+  echo "bootimg build blocked: $(IFS=,; echo "${missing[*]}")"
+  exit 0
+fi
+
+# build boot.img into artifacts
+out_boot="$ART/boot.img"
+set +e
+if [[ -n "$dtb_path" && -f "$dtb_path" ]]; then
+  eval "$mkbootimg_cmd --kernel '$kernel_path' --ramdisk '$ramdisk_path' --dtb '$dtb_path' --header_version '$header_version' --base '$base' --pagesize '$pagesize' --cmdline '$cmdline' --output '$out_boot'"
+  rc=$?
+else
+  eval "$mkbootimg_cmd --kernel '$kernel_path' --ramdisk '$ramdisk_path' --header_version '$header_version' --base '$base' --pagesize '$pagesize' --cmdline '$cmdline' --output '$out_boot'"
+  rc=$?
+fi
+set -e
+
+if [[ $rc -ne 0 || ! -f "$out_boot" ]]; then
+  {
+    echo "status=failed"
+    echo "reason=mkbootimg-failed"
+    echo "missing="
+    echo "kernel_path=$kernel_path"
+    echo "ramdisk_path=$ramdisk_path"
+    echo "dtb_path=$dtb_path"
+    echo "mkbootimg_cmd=$mkbootimg_cmd"
+    echo "header_version=$header_version"
+    echo "base=$base"
+    echo "pagesize=$pagesize"
+  } > "$OUT"
+  exit 0
+fi
+
+size="$(stat -c%s "$out_boot" 2>/dev/null || wc -c < "$out_boot")"
+{
+  echo "status=ok"
+  echo "reason=bootimg-built"
+  echo "missing="
+  echo "kernel_path=$kernel_path"
+  echo "ramdisk_path=$ramdisk_path"
+  echo "dtb_path=$dtb_path"
+  echo "mkbootimg_cmd=$mkbootimg_cmd"
+  echo "header_version=$header_version"
+  echo "base=$base"
+  echo "pagesize=$pagesize"
+  echo "output=$out_boot"
+  echo "output_size_bytes=$size"
+} > "$OUT"
+
+echo "bootimg built: $out_boot ($size bytes)"
