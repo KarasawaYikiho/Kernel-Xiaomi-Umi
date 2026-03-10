@@ -37,6 +37,7 @@ def main() -> int:
     build_rc = bexit.get('build_rc', 'n/a')
     dtbs_rc = bexit.get('dtbs_rc', 'n/a')
 
+    anyk_val_status = anyk_val.get('status', 'unknown')
     next_action = 'collect-more-data'
     if def_rc not in ('0', 'n/a'):
         next_action = 'fix-defconfig-errors'
@@ -44,9 +45,9 @@ def main() -> int:
         next_action = 'fix-build-errors'
     elif dtbs_rc not in ('0', 'n/a'):
         next_action = 'fix-dtb-build-errors'
-    elif flash_status == 'candidate' and anykernel_ok == 'yes' and anyk_val.get('status', 'unknown') == 'ok':
+    elif flash_status == 'candidate' and anykernel_ok == 'yes' and anyk_val_status in ('ok', 'unknown'):
         next_action = 'ready-for-action-test'
-    elif flash_status == 'candidate' and (anykernel_ok != 'yes' or anyk_val.get('status', 'unknown') not in ('ok', 'unknown')):
+    elif flash_status == 'candidate' and (anykernel_ok != 'yes' or anyk_val_status not in ('ok', 'unknown')):
         next_action = 'fix-anykernel-packaging'
 
     lines = [

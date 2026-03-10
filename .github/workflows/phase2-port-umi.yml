@@ -79,6 +79,11 @@ jobs:
           chmod +x tools/porting/build_anykernel_candidate.sh
           ./tools/porting/build_anykernel_candidate.sh
 
+      - name: Validate AnyKernel candidate structure
+        if: always()
+        run: |
+          python3 tools/porting/validate_anykernel_candidate.py || true
+
       - name: Generate consolidated phase2 report
         if: always()
         run: |

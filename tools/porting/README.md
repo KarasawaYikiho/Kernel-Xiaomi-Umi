@@ -18,11 +18,13 @@ This directory contains the automation chain used by `phase2-port-umi.yml`.
    - Collects build outputs, resolves primary DTB candidates, packages umi bundle, and writes flash-readiness inputs.
 7. `build_anykernel_candidate.sh`
    - Packages AnyKernel3 candidate zip and writes `artifacts/anykernel-info.txt`.
-8. `build_phase2_report.py`  
+8. `validate_anykernel_candidate.py`
+   - Validates `AnyKernel3-umi-candidate.zip` structure and writes `artifacts/anykernel-validate.txt`.
+9. `build_phase2_report.py`  
    - Generates `artifacts/phase2-report.txt`.
-9. `write_run_meta.sh`
+10. `write_run_meta.sh`
    - Writes normalized workflow/run/input metadata to `artifacts/run-meta.txt`.
-10. Post-processing suite:
+11. Post-processing suite:
    - `check_artifact_completeness.py`
    - `validate_anykernel_candidate.py`
    - `suggest_next_focus.py`
@@ -56,6 +58,7 @@ Most scripts read from `artifacts/` and write back to `artifacts/`.
 A typical local validation flow after obtaining logs/artifacts is:
 
 ```bash
+python3 tools/porting/validate_anykernel_candidate.py
 python3 tools/porting/build_phase2_report.py
 python3 tools/porting/check_artifact_completeness.py
 python3 tools/porting/extract_build_errors.py
