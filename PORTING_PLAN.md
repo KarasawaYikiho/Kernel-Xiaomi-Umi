@@ -1,10 +1,10 @@
 # UMI 5+ 内核移植计划（SO-TS 4.19 -> 5+）
 
-目标：将 `SO-TS/android_kernel_xiaomi_sm8250`（4.19）里的设备功能与驱动兼容，分批移植到 5+ 内核基线，并保持 GitHub Actions 可持续构建。
+目标：将 `SO-TS/android_kernel_xiaomi_sm8250`（4.19）中的设备功能与驱动兼容，分阶段迁移到 5+ 内核基线，并保持 GitHub Actions 持续可构建。
 
-仓库最终目标（补充）：
-- 产出 **Release 级、可直接刷入的 `boot.img`**（作为最终交付物，而非仅候选包）。
-- 相同机型（umi）可通过 Actions 稳定自助编译并产出可刷写工件（同 workflow 输入可复现）。
+仓库最终目标：
+- 产出 **Release 级、可直接刷入的 `boot.img`**（最终交付物，不限于候选包）。
+- 相同机型（umi）在相同 workflow 输入下，可通过 Actions 稳定自助编译并产出可刷写工件。
 
 ## 参考源（GitHub）
 

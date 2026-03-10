@@ -2,7 +2,7 @@
 
 This directory contains the automation chain used by `phase2-port-umi.yml`.
 
-## Pipeline Order (as used in CI)
+## CI Pipeline Order
 
 1. `install_ci_deps.sh`
    - Installs required CI packages for build and diagnostics.

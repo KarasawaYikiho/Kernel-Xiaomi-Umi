@@ -14,11 +14,11 @@ It is designed to automate Phase2 migration, CI build attempts, diagnostics, and
 - Generates structured diagnostics and decision artifacts
 - Produces candidate packaging artifacts (including AnyKernel candidate zip)
 
-## Final target (repository-level)
+## Final Target
 
 - Produce a **release-grade, directly flashable `boot.img`** for Xiaomi 10 (umi).
-- Ensure **same-model reproducibility in GitHub Actions**: same model + same workflow inputs should be able to compile and output a flashable artifact.
-- Keep Phase2 artifacts as CI evidence, but move delivery target from "candidate zip" toward "release boot image + validation checklist".
+- Ensure **same-model reproducibility in GitHub Actions**: identical model + identical workflow inputs should compile and produce a flashable artifact.
+- Retain Phase2 diagnostics as CI evidence while shifting delivery from "candidate zip" to "release `boot.img` + validation checklist".
 
 ## Upstream references
 
