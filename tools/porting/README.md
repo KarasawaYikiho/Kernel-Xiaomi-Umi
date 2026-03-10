@@ -57,7 +57,7 @@ This directory contains the automation chain used by `phase2-port-umi.yml`.
 
 ## Key Report Signals
 
-- `next_action`: machine-friendly next step (`ready-for-action-test`, `fix-build-errors`, etc.)
+- `next_action`: machine-friendly next step (`ready-for-action-test`, `prepare-release-bootimg`, `fix-build-errors`, etc.)
 - `runtime_ready`: coarse gate (`yes`/`no`) indicating whether device-side runtime validation should proceed
 - `anykernel_validate_status`: structure validation result for `AnyKernel3-umi-candidate.zip`
 - `bootimg_status`: release boot image readiness signal (`ok` / `missing` / `size_mismatch`)

@@ -22,6 +22,8 @@ def main() -> int:
     n = parse_kv(ART / "next-focus.txt")
     c = parse_kv(ART / "artifact-completeness.txt")
 
+    next_action = r.get('next_action', '')
+
     md = [
         "# Phase2 Artifact Summary",
         "",
@@ -47,6 +49,12 @@ def main() -> int:
         "- `anykernel-info.txt`",
         "- `anykernel-validate.txt`",
     ]
+
+    if next_action == 'prepare-release-bootimg':
+        md.extend([
+            "- `bootimg-info.txt`",
+            "- `bootimg-build.txt`",
+        ])
 
     if r.get('runtime_ready', 'no') == 'yes':
         md.append("- `action-validation-checklist.md`")
