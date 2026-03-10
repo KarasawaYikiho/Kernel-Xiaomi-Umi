@@ -24,6 +24,7 @@ def main() -> int:
     flash = parse_kv(ART / "flash-readiness.txt")
     dtb = parse_kv(ART / "dtb-postcheck.txt")
     anyk = parse_kv(ART / "anykernel-info.txt")
+    anyk_val = parse_kv(ART / "anykernel-validate.txt")
     missa = parse_kv(ART / "dtb-miss-analysis.txt")
     bexit = parse_kv(ART / "build-exit.txt")
     complete = parse_kv(ART / "artifact-completeness.txt")
@@ -43,9 +44,9 @@ def main() -> int:
         next_action = 'fix-build-errors'
     elif dtbs_rc not in ('0', 'n/a'):
         next_action = 'fix-dtb-build-errors'
-    elif flash_status == 'candidate' and anykernel_ok == 'yes':
+    elif flash_status == 'candidate' and anykernel_ok == 'yes' and anyk_val.get('status', 'unknown') == 'ok':
         next_action = 'ready-for-action-test'
-    elif flash_status == 'candidate' and anykernel_ok != 'yes':
+    elif flash_status == 'candidate' and (anykernel_ok != 'yes' or anyk_val.get('status', 'unknown') not in ('ok', 'unknown')):
         next_action = 'fix-anykernel-packaging'
 
     lines = [
@@ -68,6 +69,8 @@ def main() -> int:
         f"anykernel_has_imagegz={anyk.get('has_imagegz', 'no')}",
         f"anykernel_has_dtb={anyk.get('has_dtb', 'no')}",
         f"anykernel_dtb_source={anyk.get('dtb_source', '')}",
+        f"anykernel_validate_status={anyk_val.get('status', 'unknown')}",
+        f"anykernel_validate_reason={anyk_val.get('reason', 'n/a')}",
         f"miss_bucket_total={missa.get('bucket_total', '0')}",
         f"miss_top_buckets={missa.get('top_buckets', '')}",
         f"artifact_completeness={complete.get('status', 'unknown')}",

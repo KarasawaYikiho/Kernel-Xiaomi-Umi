@@ -16,6 +16,7 @@ OPTIONAL = [
     "dtb-miss-analysis.txt",
     "phase2-umi-focused-package.zip",
     "AnyKernel3-umi-candidate.zip",
+    "anykernel-validate.txt",
 ]
 
 
