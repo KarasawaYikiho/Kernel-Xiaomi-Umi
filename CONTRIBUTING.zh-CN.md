@@ -27,6 +27,21 @@
 - 验证说明（运行记录/工件）
 - 风险评估与回滚方案（涉及 workflow/script 时必须提供）
 
+## 参考源策略
+
+当前项目使用的外部参考源：
+- `SO-TS/android_kernel_xiaomi_sm8250`
+- `yefxx/xiaomi-umi-linux-kernel`
+- `UtsavBalar1231/android_kernel_xiaomi_sm8150`
+- `UtsavBalar1231/display-drivers`
+- `UtsavBalar1231/camera-kernel`
+- 作者 ID 发现源：`liyafe1997`（Strawing）
+
+规则：
+- 作者 ID 按账号级发现输入处理，集成前必须明确到具体仓库。
+- 参考源仅用于差异对比与定向移植，不做整树盲拷。
+- 不向本仓库导入官方 ROM 专有 blob。
+
 ## 变更期望
 
 - 输出或行为发生变化时，必须同步更新文档。

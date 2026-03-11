@@ -28,6 +28,7 @@ It is designed to automate Phase2 migration, CI build attempts, diagnostics, and
   - `UtsavBalar1231/android_kernel_xiaomi_sm8150`
   - `UtsavBalar1231/display-drivers`
   - `UtsavBalar1231/camera-kernel`
+  - `liyafe1997` (Strawing author ID; account-level discovery source)
 - Notes:
   - `UtsavBalar1231` and `liyafe1997` (Strawing) are treated as author IDs (account-level discovery), then selected repositories are used as donor/comparison inputs.
   - Additional references are used for driver adaptation only, not as blind drop-in replacements.

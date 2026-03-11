@@ -27,6 +27,21 @@ Use the PR template and include:
 - validation notes (run/artifacts)
 - risk + rollback notes for workflow/script changes
 
+## Reference Sources Policy
+
+Current external reference sources used by this project:
+- `SO-TS/android_kernel_xiaomi_sm8250`
+- `yefxx/xiaomi-umi-linux-kernel`
+- `UtsavBalar1231/android_kernel_xiaomi_sm8150`
+- `UtsavBalar1231/display-drivers`
+- `UtsavBalar1231/camera-kernel`
+- Author-ID discovery source: `liyafe1997` (Strawing)
+
+Rules:
+- Treat author IDs as account-level discovery inputs; select repositories explicitly before integration.
+- Use references as donor/comparison inputs only; do not do blind subtree copy.
+- Do not import proprietary blobs from official ROM packages into this repository.
+
 ## Change Expectations
 
 - Keep docs updated when outputs/behavior change.
