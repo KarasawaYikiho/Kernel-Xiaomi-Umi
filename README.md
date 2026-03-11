@@ -29,7 +29,7 @@ It is designed to automate Phase2 migration, CI build attempts, diagnostics, and
   - `UtsavBalar1231/display-drivers`
   - `UtsavBalar1231/camera-kernel`
 - Notes:
-  - `UtsavBalar1231` and `Strawing` are treated as author IDs (account-level discovery), then selected repositories are used as donor/comparison inputs.
+  - `UtsavBalar1231` and `liyafe1997` (Strawing) are treated as author IDs (account-level discovery), then selected repositories are used as donor/comparison inputs.
   - Additional references are used for driver adaptation only, not as blind drop-in replacements.
   - If no public kernel/driver repository is found under an author ID, inventory records an explicit empty result.
 

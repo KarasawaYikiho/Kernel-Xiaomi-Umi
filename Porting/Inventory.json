@@ -88,12 +88,10 @@
   "reference_discovery": {
     "fetch_mode": {
       "UtsavBalar1231": "api-error",
-      "Strawing": "api-error",
-      "strawing": "api-error"
+      "liyafe1997": "api-error"
     },
     "UtsavBalar1231": [],
-    "Strawing": [],
-    "strawing": []
+    "liyafe1997": []
   },
   "meta": {
     "generator": "Tools/Porting/Fetch_Inventory.py",

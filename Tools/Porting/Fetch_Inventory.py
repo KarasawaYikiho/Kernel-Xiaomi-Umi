@@ -18,7 +18,7 @@ TARGETS = {
     "reference_utsav_camera_kernel": {"repo": "UtsavBalar1231/camera-kernel", "ref": "main"},
 }
 
-AUTHOR_IDS = ["UtsavBalar1231", "Strawing", "strawing"]
+AUTHOR_IDS = ["UtsavBalar1231", "liyafe1997"]
 
 PATHS = ["arch/arm64/configs", "arch/arm64/boot/dts", "techpack", "drivers"]
 
