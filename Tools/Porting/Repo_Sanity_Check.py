@@ -7,11 +7,16 @@ from pathlib import Path
 import py_compile
 
 ROOT = Path(__file__).resolve().parents[2]
+TOOLS_PORTING = ROOT / "Tools" / "Porting"
+PORTING_DOCS = ROOT / "Porting"
 
 
 def check_python_compile() -> list[str]:
     errs: list[str] = []
-    for p in (ROOT / "tools" / "porting").glob("*.py"):
+    py_files = sorted(TOOLS_PORTING.glob("*.py"))
+    if not py_files:
+        return ["no python files found under Tools/Porting"]
+    for p in py_files:
         try:
             py_compile.compile(str(p), doraise=True)
         except Exception as e:  # pragma: no cover
@@ -25,18 +30,26 @@ def check_workflow_script_refs() -> list[str]:
     if not wf.exists():
         return ["missing workflow: .github/workflows/Phase2-Port-Umi.yml"]
     text = wf.read_text(encoding="utf-8")
-    refs = re.findall(r"\./Tools/Porting/([\w\-]+\.sh)", text)
-    for r in refs:
-        if not (ROOT / "tools" / "porting" / r).exists():
+
+    sh_refs = re.findall(r"\./Tools/Porting/([\w\-]+\.sh)", text)
+    py_refs = re.findall(r"python3?\s+Tools/Porting/([\w\-]+\.py)", text)
+
+    for r in sorted(set(sh_refs)):
+        if not (TOOLS_PORTING / r).exists():
             errs.append(f"missing script referenced by workflow: Tools/Porting/{r}")
+
+    for r in sorted(set(py_refs)):
+        if not (TOOLS_PORTING / r).exists():
+            errs.append(f"missing python tool referenced by workflow: Tools/Porting/{r}")
+
     return errs
 
 
 def check_markdown_links() -> list[str]:
     errs: list[str] = []
     md_files = list(ROOT.glob("*.md"))
-    md_files += list((ROOT / "porting").glob("*.md"))
-    md_files += list((ROOT / "tools" / "porting").glob("*.md"))
+    md_files += list(PORTING_DOCS.glob("*.md"))
+    md_files += list(TOOLS_PORTING.glob("*.md"))
 
     for md in md_files:
         txt = md.read_text(encoding="utf-8")
