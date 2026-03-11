@@ -2,7 +2,11 @@
 from pathlib import Path
 
 from Kv_Utils import parse_kv
-from Phase2_Decision import derive_next_action, derive_runtime_ready
+from Phase2_Decision import (
+    DEFAULT_BOOTIMG_REQUIRED_BYTES_STR,
+    derive_next_action,
+    derive_runtime_ready,
+)
 
 ART = Path("artifacts")
 OUT = ART / "phase2-report.txt"
@@ -69,7 +73,7 @@ def main() -> int:
         f"bootimg_status={boot.get('status', 'missing')}",
         f"bootimg_reason={boot.get('reason', 'n/a')}",
         f"bootimg_size_bytes={boot.get('size_bytes', '0')}",
-        f"bootimg_required_bytes={boot.get('required_bytes', '134217728')}",
+        f"bootimg_required_bytes={boot.get('required_bytes', DEFAULT_BOOTIMG_REQUIRED_BYTES_STR)}",
         f"bootimg_required_bytes_parse={boot.get('required_bytes_parse', 'unknown')}",
         f"bootimg_size_match={boot.get('size_match', 'no')}",
         f"bootimg_build_status={boot_build.get('status', 'unknown')}",

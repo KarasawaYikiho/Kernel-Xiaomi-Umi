@@ -2,7 +2,7 @@
 from pathlib import Path
 
 from Kv_Utils import parse_kv
-from Phase2_Decision import ALLOWED_NEXT_ACTION
+from Phase2_Decision import ALLOWED_NEXT_ACTION, DEFAULT_BOOTIMG_REQUIRED_BYTES_STR
 
 ART = Path("artifacts")
 OUT = ART / "phase2-report-validate.txt"
@@ -46,7 +46,7 @@ def main() -> int:
     if parse_state and parse_state not in ALLOWED_PARSE:
         invalid.append(f"bootimg_required_bytes_parse:{parse_state}")
 
-    required_bytes = rep.get("bootimg_required_bytes", "")
+    required_bytes = rep.get("bootimg_required_bytes", DEFAULT_BOOTIMG_REQUIRED_BYTES_STR)
     if required_bytes and not required_bytes.lstrip("-").isdigit():
         invalid.append(f"bootimg_required_bytes:{required_bytes}")
 

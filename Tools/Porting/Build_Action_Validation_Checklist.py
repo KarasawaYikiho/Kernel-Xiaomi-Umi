@@ -2,6 +2,7 @@
 from pathlib import Path
 
 from Kv_Utils import parse_kv
+from Phase2_Decision import DEFAULT_BOOTIMG_REQUIRED_BYTES_STR
 
 ART = Path("artifacts")
 OUT = ART / "action-validation-checklist.md"
@@ -23,7 +24,7 @@ def main() -> int:
     bootimg_build_status = report.get("bootimg_build_status", "unknown")
     bootimg_build_missing = report.get("bootimg_build_missing", "")
     bootimg_size = report.get("bootimg_size_bytes", "0")
-    bootimg_required = report.get("bootimg_required_bytes", "134217728")
+    bootimg_required = report.get("bootimg_required_bytes", DEFAULT_BOOTIMG_REQUIRED_BYTES_STR)
     bootimg_required_parse = report.get("bootimg_required_bytes_parse", "unknown")
     consistency_status = consistency.get("status", "unknown")
     consistency_errors = consistency.get("errors", "")

@@ -11,6 +11,9 @@ ALLOWED_NEXT_ACTION: set[str] = {
     "fix-anykernel-packaging",
 }
 
+DEFAULT_BOOTIMG_REQUIRED_BYTES = 134217728
+DEFAULT_BOOTIMG_REQUIRED_BYTES_STR = str(DEFAULT_BOOTIMG_REQUIRED_BYTES)
+
 REPORT_NEXT_TO_FOCUS: dict[str, str] = {
     "fix-defconfig-errors": "fix-defconfig-errors",
     "fix-build-errors": "fix-build-errors",

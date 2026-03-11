@@ -1,20 +1,23 @@
 # 贡献指南
 
+[English Guide](./CONTRIBUTING.md)
+
 感谢你参与改进 **Kernel-Xiaomi-Umi**。
 
 ## 适用范围
 
-本仓库是**内核迁移编排仓库**（CI 工作流 + 迁移/诊断工具），不是完整内核源码仓。
+本仓库是**迁移编排仓库**（工作流 + 脚本 + 诊断），不是完整内核源码仓库。
 
 ## 开始前请先阅读
 
-1. `README.zh-CN.md`（或 `README.md`）
+1. `README.zh-CN.md`
 2. `Porting/README.md`
-3. `PORTING_PLAN.md` 与最新的 `Porting/CHANGELOG.md`
+3. `Tools/Porting/README.md`
+4. 最新 `PORTING_PLAN.md` 与 `Porting/CHANGELOG.md`
 
-## 分支规范
+## 分支策略
 
-请遵循 `Porting/BRANCHING.md`：
+遵循 `Porting/BRANCHING.md`：
 
 - `port/phase*`：阶段性开发
 - `port/hotfix-*`：紧急修复
@@ -23,13 +26,14 @@
 
 请使用 PR 模板，并至少包含：
 
-- 变更摘要与影响范围
-- 验证说明（运行记录/工件）
-- 风险评估与回滚方案（涉及 workflow/script 时必须提供）
+- 变更内容与动机
+- 验证证据（run/artifacts/本地检查）
+- 涉及 workflow/script 时的风险与回滚方案
 
 ## 参考源策略
 
-当前项目使用的外部参考源：
+允许使用的外部参考：
+
 - `SO-TS/android_kernel_xiaomi_sm8250`
 - `yefxx/xiaomi-umi-linux-kernel`
 - `UtsavBalar1231/android_kernel_xiaomi_sm8150`
@@ -38,23 +42,20 @@
 - 作者 ID 发现源：`liyafe1997`（Strawing）
 
 规则：
-- 作者 ID 按账号级发现输入处理，集成前必须明确到具体仓库。
-- 参考源仅用于差异对比与定向移植，不做整树盲拷。
-- 不向本仓库导入官方 ROM 专有 blob。
 
-## 变更期望
+- 作者 ID 仅用于发现，集成前必须明确到具体仓库。
+- 参考源仅作对比/借鉴输入，不做整树盲拷贝。
+- 禁止导入官方 ROM 专有 blob。
 
-- 输出或行为发生变化时，必须同步更新文档。
-- 优先保证 CI 结果可复现，避免只在本地可运行的改动。
-- 新增诊断工具请放在 `Tools/Porting/`，并更新 `Tools/Porting/README.md`。
+## 质量要求
 
-## Changelog 规范
+- 行为或输出变化时必须同步更新文档。
+- 优先保证 CI 可复现，不接受仅本地可用改动。
+- 新诊断脚本放在 `Tools/Porting/` 并补充索引文档。
+- `Porting/CHANGELOG.md` 保持里程碑级、简洁记录。
 
-- 里程碑级更新写入 `Porting/CHANGELOG.md`（保持简洁）。
-- 详细历史可放入归档文件（archive）。
+## 安全要求
 
-## 安全与合规
-
-- 禁止提交密钥、令牌或任何敏感凭据。
-- 保持 `.gitignore` 干净，避免提交本地噪声文件。
-- 生成型工件默认视为临时产物，除非明确要求入库。
+- 禁止提交密钥、令牌等敏感信息。
+- 保持 `.gitignore` 干净，避免本地噪声入库。
+- 生成工件默认视为临时产物，除非明确要求追踪。

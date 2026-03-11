@@ -5,21 +5,21 @@
 
 ## Scope
 
-- [ ] Workflow
-- [ ] Script(s) under `Tools/Porting/`
-- [ ] Docs only
+- [ ] Workflow (`.github/workflows/*`)
+- [ ] Scripts (`Tools/Porting/*`)
+- [ ] Documentation only
 
 ## Validation
 
 - [ ] Local sanity check completed (if applicable)
-- [ ] Workflow run verified (or rationale if not run)
-- [ ] Key artifacts reviewed (`phase2-report`, `build-exit`, `build-error-summary`)
+- [ ] Workflow run validated (or explain why skipped)
+- [ ] Reviewed key artifacts (`phase2-report`, `build-exit`, `build-error-summary`)
 
-## Risk
+## Risk & Rollback
 
-- Potential regressions:
+- Potential regression points:
 - Rollback plan:
 
-## Notes
+## Context
 
-- Related issues/contexts:
+- Related issue / run / discussion:

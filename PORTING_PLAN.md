@@ -1,62 +1,66 @@
-# UMI 5+ 内核移植计划（SO-TS 4.19 -> 5+）
+# UMI Kernel Porting Plan (SO-TS 4.19 -> 5+)
 
-目标：将 `SO-TS/android_kernel_xiaomi_sm8250`（4.19）中的设备功能与驱动兼容，分阶段迁移到 5+ 内核基线，并保持 GitHub Actions 持续可构建。
+## Mission
 
-仓库最终目标：
-- 产出 **Release 级、可直接刷入的 `boot.img`**（最终交付物，不限于候选包）。
-- 相同机型（umi）在相同 workflow 输入下，可通过 Actions 稳定自助编译并产出可刷写工件。
+Migrate device capability from `SO-TS/android_kernel_xiaomi_sm8250` (4.19) onto a 5+ baseline with CI-first reproducibility.
 
-## 参考源（GitHub）
+## Final Repository Goal
 
-- 功能参考（低版本）：https://github.com/SO-TS/android_kernel_xiaomi_sm8250
-- 5+ 候选基线：https://github.com/yefxx/xiaomi-umi-linux-kernel
-- 驱动参考（作者 ID: UtsavBalar1231）：
-  - https://github.com/UtsavBalar1231/android_kernel_xiaomi_sm8150
-  - https://github.com/UtsavBalar1231/display-drivers
-  - https://github.com/UtsavBalar1231/camera-kernel
-- 作者 ID 发现源：`liyafe1997`（Strawing）
+- Deliver a **release-grade, directly flashable `boot.img`**.
+- Keep **GitHub Actions reproducibility** for the same model + same workflow inputs.
 
-说明：
-- 作者 ID 按账号级发现处理，集成前需明确到具体仓库。
-- 参考源仅用于差异对比与定向移植，不做整树盲拷。
-- 官方 ROM 包仅做 metadata/hash/partition-op 基线分析，不导入专有 blob。
+## Reference Sources
 
-## 当前状态快照（2026-03-09）
+- SO-TS: <https://github.com/SO-TS/android_kernel_xiaomi_sm8250>
+- 5+ baseline candidate: <https://github.com/yefxx/xiaomi-umi-linux-kernel>
+- Driver donor references:
+  - <https://github.com/UtsavBalar1231/android_kernel_xiaomi_sm8150>
+  - <https://github.com/UtsavBalar1231/display-drivers>
+  - <https://github.com/UtsavBalar1231/camera-kernel>
+- Author-ID discovery source: `liyafe1997` (Strawing)
 
-- Phase 0：完成
-- Phase 1：完成
-- Phase 2：进行中（已具备自动迁移 + 自动诊断 + 候选打包）
-- 当前重点：提升构建通过率与 DTB 命中质量
+Policy:
+- Author IDs are discovery inputs, not direct integration targets.
+- No blind full-tree copy from references.
+- Official ROM packages are analysis-only (no proprietary blob import).
 
-## 实施阶段
+## Current Snapshot
 
-### Phase 0 - 基线冻结（已完成）
-- [x] 锁定 5+ 基线仓库 + 分支
-- [x] 建立分支策略：`port/phase-*`
+- Phase 0: Complete
+- Phase 1: Complete
+- Phase 2: In progress (automated migration + diagnostics + packaging)
+- Current focus: release `boot.img` path hardening + runtime validation stability
 
-### Phase 1 - 能力盘点（已完成）
-- [x] 提取 SO-TS 的设备 defconfig、dts、techpack、MIUI patch 点
-- [x] 提取 5+ 基线的对应能力清单
-- [x] 生成“可直接移植/需改写/不可移植”分类表
+## Phase Checklist
 
-### Phase 2 - 最小可启动移植（已启动）
-- [x] defconfig 迁移流水线（umi，自动化脚本）
-- [x] dts/dtsi 首批迁移流水线（关键文件自动筛选复制）
-- [x] 编译通过 + 产出 AnyKernel zip（候选）
-- [ ] 产出可直接刷入的 release 级 `boot.img`（含尺寸/分区约束校验）
+### Phase 0 — Baseline Lock
+- [x] Lock baseline source/target
+- [x] Define branch strategy (`port/phase-*`)
 
-### Phase 3 - 功能补齐
-- [ ] 显示/刷新率相关
-- [ ] 音频与传感器
-- [ ] KernelSU（可选）
-- [ ] MIUI 特性（按可行性迁移）
+### Phase 1 — Capability Inventory
+- [x] Extract SO-TS capability inventory (defconfig/dts/techpack/patch)
+- [x] Extract 5+ baseline inventory
+- [x] Generate migration classification report
 
-### Phase 4 - 稳定性与回归
-- [ ] 日常使用回归
-- [ ] 功耗/发热/稳定性对比
-- [ ] 发布 release candidate
+### Phase 2 — Minimal Bootable Migration
+- [x] Automated defconfig migration
+- [x] Automated DTS/DTSI seed migration
+- [x] CI build + AnyKernel candidate packaging
+- [ ] Release-grade `boot.img` output with size/partition constraints
 
-## 交付规则
-- 每个阶段至少 1 次可编译提交
-- 每次 push 触发 GitHub Actions
-- 关键变更写入 `Porting/CHANGELOG.md`
+### Phase 3 — Feature Completion
+- [ ] Display / refresh-rate path
+- [ ] Audio / sensor path
+- [ ] Optional KernelSU integration
+- [ ] MIUI-specific capability adaptation where feasible
+
+### Phase 4 — Stability & Regression
+- [ ] Daily-use regression pass
+- [ ] Power / thermal / stability comparison
+- [ ] Release candidate sign-off
+
+## Execution Rules
+
+- At least one compilable commit per phase.
+- Every push should have CI evidence.
+- Major changes must update `Porting/CHANGELOG.md`.

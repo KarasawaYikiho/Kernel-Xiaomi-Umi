@@ -3,6 +3,7 @@ from pathlib import Path
 import json
 
 from Kv_Utils import parse_kv
+from Phase2_Decision import DEFAULT_BOOTIMG_REQUIRED_BYTES_STR
 
 ART = Path("artifacts")
 OUT = ART / "phase2-metrics.json"
@@ -39,7 +40,7 @@ def main() -> int:
             "bootimg_status": report.get("bootimg_status", "missing"),
             "bootimg_reason": report.get("bootimg_reason", "n/a"),
             "bootimg_size_bytes": report.get("bootimg_size_bytes", "0"),
-            "bootimg_required_bytes": report.get("bootimg_required_bytes", "134217728"),
+            "bootimg_required_bytes": report.get("bootimg_required_bytes", DEFAULT_BOOTIMG_REQUIRED_BYTES_STR),
             "bootimg_required_bytes_parse": report.get("bootimg_required_bytes_parse", "unknown"),
             "bootimg_build_status": report.get("bootimg_build_status", "unknown"),
             "bootimg_build_reason": report.get("bootimg_build_reason", "n/a"),

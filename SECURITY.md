@@ -1,21 +1,34 @@
 # Security Policy
 
-## Supported Versions
+## Supported Scope
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+This repository is an orchestration/tooling project.
+Security fixes apply to:
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+- GitHub workflows
+- Scripts under `Tools/Porting/`
+- Documentation that can affect secure operation
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+Please open a private security report through GitHub Security Advisories when possible.
+If unavailable, open an issue with minimal reproduction details (without sensitive data) and mark it as security-related.
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+Include:
+
+- Affected file(s) and path(s)
+- Impact description
+- Reproduction steps
+- Suggested fix (optional)
+
+## Response Expectations
+
+- Initial triage target: within 72 hours
+- Status updates: provided during investigation
+- Confirmed issues: patched with changelog note and risk summary
+
+## Sensitive Data Rules
+
+- Never commit tokens, credentials, or private keys.
+- Keep build artifacts free of secrets.
+- Avoid embedding local machine paths in externally shared reports unless required for diagnosis.
