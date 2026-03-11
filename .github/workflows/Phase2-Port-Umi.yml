@@ -76,20 +76,8 @@ jobs:
       - name: Normalize boot image size input
         shell: bash
         run: |
-          set -euo pipefail
-          raw="${BOOTIMG_REQUIRED_BYTES:-134217728}"
-          raw="${raw//[[:space:]]/}"
-          if [[ -z "$raw" ]]; then
-            raw="134217728"
-          fi
-          if [[ "$raw" =~ ^-?[0-9]+$ ]]; then
-            echo "BOOTIMG_REQUIRED_BYTES=$raw" >> "$GITHUB_ENV"
-            echo "bootimg_required_bytes_normalized=$raw" >> "$GITHUB_OUTPUT"
-          else
-            echo "BOOTIMG_REQUIRED_BYTES=134217728" >> "$GITHUB_ENV"
-            echo "bootimg_required_bytes_normalized=134217728" >> "$GITHUB_OUTPUT"
-            echo "::warning::Invalid bootimg_required_bytes input '$raw', fallback to 134217728"
-          fi
+          chmod +x Tools/Porting/Normalize_Bootimg_Required_Bytes.sh
+          ./Tools/Porting/Normalize_Bootimg_Required_Bytes.sh
 
       - name: Apply Phase2 migration
         run: |

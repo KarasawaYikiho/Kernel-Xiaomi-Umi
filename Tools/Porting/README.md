@@ -7,19 +7,21 @@ This directory contains the automation chain used by `Phase2-Port-Umi.yml`.
 1. `Install_Ci_Deps.sh` — install CI dependencies and best-effort bootimg tooling
 2. `Prepare_Phase2_Sources.sh` — clone source/target trees into `source/` and `target/`
 3. `Check_Target_Kernel_Version.sh` — emit target kernel version tuple
-4. `Apply_Phase2_Migration.sh` — wrapper for device migration
-5. `Run_Phase2_Build.sh` — run defconfig/build/DTB attempts and emit `build-exit.txt`
-6. `Collect_Phase2_Artifacts.sh` — collect outputs and package umi bundle
-7. `Build_Anykernel_Candidate.sh` — build AnyKernel candidate and emit `anykernel-info.txt`
-8. `Prepare_Release_Bootimg.sh` — best-effort release `boot.img` path (`ramdisk` build or prebuilt URL fallback)
-9. `Validate_Anykernel_Candidate.py` — structure validation for candidate zip
-10. `Build_Phase2_Report.py` — produce `phase2-report.txt`
-11. `Write_Run_Meta.sh` — write normalized run metadata
-12. `Run_Postprocess_Suite.sh` — execute report/summary/metrics/consistency/checklist chain
+4. `Normalize_Bootimg_Required_Bytes.sh` — normalize `BOOTIMG_REQUIRED_BYTES` input into a safe integer
+5. `Apply_Phase2_Migration.sh` — wrapper for device migration
+6. `Run_Phase2_Build.sh` — run defconfig/build/DTB attempts and emit `build-exit.txt`
+7. `Collect_Phase2_Artifacts.sh` — collect outputs and package umi bundle
+8. `Build_Anykernel_Candidate.sh` — build AnyKernel candidate and emit `anykernel-info.txt`
+9. `Prepare_Release_Bootimg.sh` — best-effort release `boot.img` path (`ramdisk` build or prebuilt URL fallback)
+10. `Validate_Anykernel_Candidate.py` — structure validation for candidate zip
+11. `Build_Phase2_Report.py` — produce `phase2-report.txt`
+12. `Write_Run_Meta.sh` — write normalized run metadata
+13. `Run_Postprocess_Suite.sh` — execute report/summary/metrics/consistency/checklist chain
 
 ## Script Categories
 
 - Source prep: `Prepare_Phase2_Sources.sh`, `Check_Target_Kernel_Version.sh`
+- Input normalization: `Normalize_Bootimg_Required_Bytes.sh`
 - Migration: `Apply_Phase2_Migration.sh`, `Phase2_Apply.sh`
 - DTB diagnostics: `Build_Dtb_Manifest.py`, `Dtb_Postcheck.py`, `Analyze_Dtb_Miss.py`
 - Readiness/reporting: `Phase2_Decision.py`, `Build_Phase2_Report.py`, `Validate_Phase2_Report.py`, `Validate_Boot_Image.py`
