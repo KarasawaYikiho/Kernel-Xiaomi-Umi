@@ -9,7 +9,17 @@
 ## 参考源（GitHub）
 
 - 功能参考（低版本）：https://github.com/SO-TS/android_kernel_xiaomi_sm8250
-- 5+ 候选基线： https://github.com/yefxx/xiaomi-umi-linux-kernel
+- 5+ 候选基线：https://github.com/yefxx/xiaomi-umi-linux-kernel
+- 驱动参考（作者 ID: UtsavBalar1231）：
+  - https://github.com/UtsavBalar1231/android_kernel_xiaomi_sm8150
+  - https://github.com/UtsavBalar1231/display-drivers
+  - https://github.com/UtsavBalar1231/camera-kernel
+- 作者 ID 发现源：`liyafe1997`（Strawing）
+
+说明：
+- 作者 ID 按账号级发现处理，集成前需明确到具体仓库。
+- 参考源仅用于差异对比与定向移植，不做整树盲拷。
+- 官方 ROM 包仅做 metadata/hash/partition-op 基线分析，不导入专有 blob。
 
 ## 当前状态快照（2026-03-09）
 
