@@ -8,6 +8,7 @@ python3 Tools/Porting/Check_Artifact_Completeness.py || true
 python3 Tools/Porting/Validate_Anykernel_Candidate.py || true
 python3 Tools/Porting/Validate_Boot_Image.py || true
 python3 Tools/Porting/Suggest_Next_Focus.py || true
+python3 Tools/Porting/Verify_Decision_Consistency.py || true
 python3 Tools/Porting/Extract_Build_Errors.py || true
 python3 Tools/Porting/Build_Artifact_Index.py || true
 python3 Tools/Porting/Summarize_Artifacts_Markdown.py || true
