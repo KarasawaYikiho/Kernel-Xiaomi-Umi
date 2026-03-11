@@ -35,6 +35,10 @@ on:
         description: "optional URL to fetch ramdisk.cpio.gz for release bootimg build"
         required: false
         default: ""
+      bootimg_prebuilt_url:
+        description: "optional URL to fetch a prebuilt boot.img when ramdisk is unavailable"
+        required: false
+        default: ""
 
 jobs:
   port-and-build:
@@ -43,6 +47,7 @@ jobs:
     env:
       BOOTIMG_REQUIRED_BYTES: ${{ github.event.inputs.bootimg_required_bytes || '268435456' }}
       BOOTIMG_RAMDISK_URL: ${{ github.event.inputs.bootimg_ramdisk_url || '' }}
+      BOOTIMG_PREBUILT_URL: ${{ github.event.inputs.bootimg_prebuilt_url || '' }}
     steps:
       - name: Checkout orchestrator repo
         uses: actions/checkout@v4

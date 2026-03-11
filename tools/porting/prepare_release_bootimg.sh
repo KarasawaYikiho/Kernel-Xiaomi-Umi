@@ -12,6 +12,7 @@ OUT="$ART/bootimg-build.txt"
 kernel_path=""
 ramdisk_path="${BOOTIMG_RAMDISK_PATH:-}"
 ramdisk_url="${BOOTIMG_RAMDISK_URL:-}"
+prebuilt_url="${BOOTIMG_PREBUILT_URL:-}"
 dtb_path="${BOOTIMG_DTB_PATH:-}"
 mkbootimg_cmd=""
 
@@ -72,6 +73,37 @@ header_version="${BOOTIMG_HEADER_VERSION:-3}"
 base="${BOOTIMG_BASE:-0x00000000}"
 pagesize="${BOOTIMG_PAGESIZE:-4096}"
 cmdline="${BOOTIMG_CMDLINE:-}"
+
+# fallback: use a prebuilt boot.img directly when mkbootimg inputs are unavailable
+if [[ -n "$prebuilt_url" ]]; then
+  out_boot="$ART/boot.img"
+  if command -v curl >/dev/null 2>&1; then
+    curl -L --fail --retry 3 "$prebuilt_url" -o "$out_boot" || true
+  elif command -v wget >/dev/null 2>&1; then
+    wget -O "$out_boot" "$prebuilt_url" || true
+  fi
+  if [[ -f "$out_boot" ]]; then
+    size="$(stat -c%s "$out_boot" 2>/dev/null || wc -c < "$out_boot")"
+    {
+      echo "status=ok"
+      echo "reason=prebuilt-bootimg-downloaded"
+      echo "missing="
+      echo "kernel_path=$kernel_path"
+      echo "ramdisk_path=$ramdisk_path"
+      echo "dtb_path=$dtb_path"
+      echo "mkbootimg_cmd=$mkbootimg_cmd"
+      echo "header_version=$header_version"
+      echo "base=$base"
+      echo "pagesize=$pagesize"
+      echo "output=$out_boot"
+      echo "output_size_bytes=$size"
+      echo "source=prebuilt_url"
+      echo "prebuilt_url=$prebuilt_url"
+    } > "$OUT"
+    echo "bootimg downloaded: $out_boot ($size bytes)"
+    exit 0
+  fi
+fi
 
 missing=()
 [[ -n "$mkbootimg_cmd" ]] || missing+=("mkbootimg")

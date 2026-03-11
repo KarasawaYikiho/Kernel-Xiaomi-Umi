@@ -19,7 +19,7 @@ This directory contains the automation chain used by `phase2-port-umi.yml`.
 7. `build_anykernel_candidate.sh`
    - Packages AnyKernel3 candidate zip and writes `artifacts/anykernel-info.txt`.
 8. `prepare_release_bootimg.sh`
-   - Best-effort `boot.img` build stage; writes `artifacts/bootimg-build.txt` with explicit blockers if inputs are missing.
+   - Best-effort `boot.img` stage: either builds with `mkbootimg` + ramdisk, or downloads `BOOTIMG_PREBUILT_URL` fallback; writes `artifacts/bootimg-build.txt` with explicit blockers if inputs are missing.
 9. `validate_anykernel_candidate.py`
    - Validates `AnyKernel3-umi-candidate.zip` structure and writes `artifacts/anykernel-validate.txt`.
 9. `build_phase2_report.py`  
