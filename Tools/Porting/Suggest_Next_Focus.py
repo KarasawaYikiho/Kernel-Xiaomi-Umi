@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from pathlib import Path
 
+from Phase2_Decision import derive_next_focus, parse_float
+
 ART = Path("artifacts")
 OUT = ART / "next-focus.txt"
 
@@ -23,51 +25,20 @@ def main() -> int:
     flash = report.get("flash_status", "unknown")
     anyk = report.get("anykernel_ok", "no")
     anyk_val = report.get("anykernel_validate_status", "unknown")
-    hit_ratio = float(report.get("manifest_hit_ratio", "0") or 0)
+    hit_ratio = parse_float(report.get("manifest_hit_ratio", "0"), default=0.0)
     build_rc = report.get("build_rc", "n/a")
     dtbs_rc = report.get("dtbs_rc", "n/a")
     report_next = report.get("next_action", "")
 
-    focus = "collect-more-data"
-    reason = "default"
-
-    # Prefer phase2-report decision when present to keep postprocess outputs consistent.
-    if report_next == "fix-defconfig-errors":
-        focus = "fix-defconfig-errors"
-        reason = "report_next_action"
-    elif report_next == "fix-build-errors":
-        focus = "fix-build-errors"
-        reason = "report_next_action"
-    elif report_next == "fix-dtb-build-errors":
-        focus = "fix-dtb-errors"
-        reason = "report_next_action"
-    elif report_next == "fix-anykernel-packaging":
-        focus = "fix-anykernel-packaging"
-        reason = "report_next_action"
-    elif report_next == "ready-for-action-test":
-        focus = "request-action-validation"
-        reason = "report_next_action"
-    elif report_next == "prepare-release-bootimg":
-        focus = "prepare-release-bootimg"
-        reason = "report_next_action"
-    elif build_rc not in ("0", "n/a"):
-        focus = "fix-build-errors"
-        reason = "core_build_failed"
-    elif dtbs_rc not in ("0", "n/a"):
-        focus = "fix-dtb-errors"
-        reason = "dtb_build_failed"
-    elif flash == "candidate" and anyk != "yes":
-        focus = "fix-anykernel-packaging"
-        reason = "candidate_without_anykernel"
-    elif flash == "candidate" and anyk == "yes" and anyk_val not in ("ok", "unknown"):
-        focus = "fix-anykernel-packaging"
-        reason = "candidate_with_invalid_anykernel_structure"
-    elif flash == "candidate" and anyk == "yes":
-        focus = "request-action-validation"
-        reason = "candidate_and_packaging_ok"
-    elif hit_ratio < 0.35:
-        focus = "improve-dtb-manifest-mapping"
-        reason = "low_manifest_hit_ratio"
+    focus, reason = derive_next_focus(
+        report_next_action=report_next,
+        build_rc=build_rc,
+        dtbs_rc=dtbs_rc,
+        flash_status=flash,
+        anykernel_ok=anyk,
+        anykernel_validate_status=anyk_val,
+        manifest_hit_ratio=hit_ratio,
+    )
 
     OUT.write_text(
         "\n".join([

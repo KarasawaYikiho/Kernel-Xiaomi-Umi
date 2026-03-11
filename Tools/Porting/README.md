@@ -48,7 +48,7 @@ This directory contains the automation chain used by `Phase2-Port-Umi.yml`.
 - **DTB matching/diagnostics:** `Build_Dtb_Manifest.py`, `Dtb_Postcheck.py`, `Analyze_Dtb_Miss.py`
 - **Readiness/reporting:** `Phase2_Decision.py` (shared next_action/runtime_ready derivation), `Evaluate_Artifact.py`, `Build_Phase2_Report.py`, `Validate_Phase2_Report.py`, `Validate_Anykernel_Candidate.py`, `Build_Action_Validation_Checklist.py` (includes `runtime_ready` report field)
 - **CI artifact UX:** `Build_Artifact_Index.py`, `Summarize_Artifacts_Markdown.py`, `Build_Status_Badge_Line.py`, `Build_Artifact_Checksums.py`
-- **Automation metrics:** `Collect_Metrics_Json.py`, `Check_Artifact_Completeness.py`, `Suggest_Next_Focus.py`, `Extract_Build_Errors.py`
+- **Automation metrics:** `Collect_Metrics_Json.py`, `Check_Artifact_Completeness.py`, `Suggest_Next_Focus.py` (reuses shared decision mapping from `Phase2_Decision.py`), `Extract_Build_Errors.py`
 - **Build orchestration:** `Run_Phase2_Build.sh` (defconfig/build attempt + exit snapshot)
 - **Build artifact orchestration:** `Collect_Phase2_Artifacts.sh` (collect/package primary artifacts after build)
 - **AnyKernel packaging orchestration:** `Build_Anykernel_Candidate.sh` (builds candidate AnyKernel zip + diagnostics)

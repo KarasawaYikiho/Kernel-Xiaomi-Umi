@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-from typing import Iterable
-
 ALLOWED_NEXT_ACTION: set[str] = {
     "collect-more-data",
     "fix-defconfig-errors",
@@ -13,9 +11,25 @@ ALLOWED_NEXT_ACTION: set[str] = {
     "fix-anykernel-packaging",
 }
 
+REPORT_NEXT_TO_FOCUS: dict[str, str] = {
+    "fix-defconfig-errors": "fix-defconfig-errors",
+    "fix-build-errors": "fix-build-errors",
+    "fix-dtb-build-errors": "fix-dtb-errors",
+    "fix-anykernel-packaging": "fix-anykernel-packaging",
+    "ready-for-action-test": "request-action-validation",
+    "prepare-release-bootimg": "prepare-release-bootimg",
+}
+
 
 def is_nonzero_rc(value: str) -> bool:
     return value not in ("0", "n/a")
+
+
+def parse_float(value: str, default: float = 0.0) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
 
 
 def derive_next_action(
@@ -56,3 +70,38 @@ def derive_next_action(
 
 def derive_runtime_ready(next_action: str) -> str:
     return "yes" if next_action == "ready-for-action-test" else "no"
+
+
+def derive_next_focus(
+    *,
+    report_next_action: str,
+    build_rc: str,
+    dtbs_rc: str,
+    flash_status: str,
+    anykernel_ok: str,
+    anykernel_validate_status: str,
+    manifest_hit_ratio: float,
+) -> tuple[str, str]:
+    # Keep focus semantically pinned to report decision when possible.
+    mapped = REPORT_NEXT_TO_FOCUS.get(report_next_action)
+    if mapped:
+        return mapped, "report_next_action"
+
+    if is_nonzero_rc(build_rc):
+        return "fix-build-errors", "core_build_failed"
+    if is_nonzero_rc(dtbs_rc):
+        return "fix-dtb-errors", "dtb_build_failed"
+    if flash_status == "candidate" and anykernel_ok != "yes":
+        return "fix-anykernel-packaging", "candidate_without_anykernel"
+    if (
+        flash_status == "candidate"
+        and anykernel_ok == "yes"
+        and anykernel_validate_status not in ("ok", "unknown")
+    ):
+        return "fix-anykernel-packaging", "candidate_with_invalid_anykernel_structure"
+    if flash_status == "candidate" and anykernel_ok == "yes":
+        return "request-action-validation", "candidate_and_packaging_ok"
+    if manifest_hit_ratio < 0.35:
+        return "improve-dtb-manifest-mapping", "low_manifest_hit_ratio"
+
+    return "collect-more-data", "default"
