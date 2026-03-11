@@ -30,7 +30,8 @@ def main() -> int:
     bootimg_build_status = report.get("bootimg_build_status", "unknown")
     bootimg_build_missing = report.get("bootimg_build_missing", "")
     bootimg_size = report.get("bootimg_size_bytes", "0")
-    bootimg_required = report.get("bootimg_required_bytes", "268435456")
+    bootimg_required = report.get("bootimg_required_bytes", "134217728")
+    bootimg_required_parse = report.get("bootimg_required_bytes_parse", "unknown")
     blockers = []
     if report.get("defconfig_rc", "n/a") not in ("0", "n/a"):
         blockers.append(f"defconfig_rc={report.get('defconfig_rc', 'n/a')}")
@@ -61,6 +62,7 @@ def main() -> int:
         f"- bootimg_build_status: `{bootimg_build_status}`",
         f"- bootimg_size_bytes: `{bootimg_size}`",
         f"- bootimg_required_bytes: `{bootimg_required}`",
+        f"- bootimg_required_bytes_parse: `{bootimg_required_parse}`",
         "",
         "## Decision",
         "- [ ] If `runtime_ready=yes`, proceed with device runtime validation now.",

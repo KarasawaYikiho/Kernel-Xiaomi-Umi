@@ -123,7 +123,7 @@ header_version="${BOOTIMG_HEADER_VERSION:-3}"
 base="${BOOTIMG_BASE:-0x00000000}"
 pagesize="${BOOTIMG_PAGESIZE:-4096}"
 cmdline="${BOOTIMG_CMDLINE:-}"
-required_bytes="${BOOTIMG_REQUIRED_BYTES:-268435456}"
+required_bytes="${BOOTIMG_REQUIRED_BYTES:-134217728}"
 
 # fallback: use a prebuilt boot.img directly when mkbootimg inputs are unavailable
 if [[ -n "$prebuilt_url" ]]; then
