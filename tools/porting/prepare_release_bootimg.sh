@@ -48,7 +48,7 @@ if [[ -z "$dtb_path" && -s "$ART/umi_primary_dtb_paths.txt" ]]; then
   [[ -f "$cand" ]] && dtb_path="$cand"
 fi
 
-# mkbootimg tool detection
+# mkbootimg tool detection (with best-effort remote fallback)
 if command -v mkbootimg >/dev/null 2>&1; then
   mkbootimg_cmd="mkbootimg"
 elif [[ -x "$HOME/.local/bin/mkbootimg" ]]; then
@@ -68,6 +68,35 @@ PY
   if [[ "$py_mkbootimg" == "ok" ]]; then
     mkbootimg_cmd="python3 -m mkbootimg"
   fi
+fi
+
+# Last resort: fetch a standalone mkbootimg.py into artifacts/ (network best-effort)
+if [[ -z "$mkbootimg_cmd" && -x "$(command -v python3 || true)" ]]; then
+  fetched="$ART/mkbootimg.py"
+  fetch_urls=(
+    "https://raw.githubusercontent.com/aosp-mirror/platform_system_tools_mkbootimg/master/mkbootimg.py"
+    "https://android.googlesource.com/platform/system/tools/mkbootimg/+/refs/heads/master/mkbootimg.py?format=TEXT"
+  )
+  for u in "${fetch_urls[@]}"; do
+    if command -v curl >/dev/null 2>&1; then
+      if [[ "$u" == *"format=TEXT"* ]]; then
+        curl -L --fail --retry 2 "$u" | base64 -d > "$fetched" 2>/dev/null || true
+      else
+        curl -L --fail --retry 2 "$u" -o "$fetched" || true
+      fi
+    elif command -v wget >/dev/null 2>&1; then
+      if [[ "$u" == *"format=TEXT"* ]]; then
+        wget -qO- "$u" | base64 -d > "$fetched" 2>/dev/null || true
+      else
+        wget -O "$fetched" "$u" || true
+      fi
+    fi
+    if [[ -s "$fetched" ]]; then
+      chmod +x "$fetched" || true
+      mkbootimg_cmd="python3 '$fetched'"
+      break
+    fi
+  done
 fi
 
 header_version="${BOOTIMG_HEADER_VERSION:-3}"

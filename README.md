@@ -83,6 +83,7 @@ Quick dispatch guidance:
 - Prefer `bootimg_ramdisk_url` when you can provide a trusted `ramdisk.cpio.gz` matching the target device/base.
 - Use `bootimg_prebuilt_url` as fallback when ramdisk cannot be provided in CI.
 - If both are set, the current pipeline attempts prebuilt fallback first, then mkbootimg path.
+- `mkbootimg` is now resolved best-effort (system/user path/embedded script/python module, then remote `mkbootimg.py` fetch).
 
 ## Key scripts
 

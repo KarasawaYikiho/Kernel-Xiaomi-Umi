@@ -82,6 +82,7 @@ Phase2 迁移 + 构建 + 诊断流程：
 - 能提供匹配机型/基线的 `ramdisk.cpio.gz` 时，优先使用 `bootimg_ramdisk_url`。
 - 无法在 CI 提供 ramdisk 时，使用 `bootimg_prebuilt_url` 作为回退。
 - 两者同时提供时，当前流程会先尝试 prebuilt 回退，再走 mkbootimg 构建路径。
+- `mkbootimg` 现已做 best-effort 自动解析（系统/用户路径、仓内脚本、python 模块，最后回退到远程拉取 `mkbootimg.py`）。
 
 ## 关键脚本
 
