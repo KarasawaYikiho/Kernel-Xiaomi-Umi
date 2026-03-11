@@ -1,5 +1,13 @@
 {
   "so_ts": {
+    "repo": "SO-TS/android_kernel_xiaomi_sm8250",
+    "ref": "android16-aptusitu",
+    "fetch_mode": {
+      "arch/arm64/configs": "api",
+      "arch/arm64/boot/dts": "api",
+      "techpack": "api",
+      "drivers": "api"
+    },
     "arch/arm64/configs": [
       "AOSP_defconfig",
       "alioth_defconfig",
@@ -229,6 +237,14 @@
     ]
   },
   "base_5plus": {
+    "repo": "yefxx/xiaomi-umi-linux-kernel",
+    "ref": "master",
+    "fetch_mode": {
+      "arch/arm64/configs": "api",
+      "arch/arm64/boot/dts": "api",
+      "techpack": "git-fallback",
+      "drivers": "api"
+    },
     "arch/arm64/configs": [
       "defconfig",
       "hardening.config",
@@ -418,5 +434,367 @@
       "xen",
       "zorro"
     ]
+  },
+  "reference_utsav_sm8150": {
+    "repo": "UtsavBalar1231/android_kernel_xiaomi_sm8150",
+    "ref": "master",
+    "fetch_mode": {
+      "arch/arm64/configs": "api",
+      "arch/arm64/boot/dts": "api",
+      "techpack": "api",
+      "drivers": "api"
+    },
+    "arch/arm64/configs": [
+      "cuttlefish_defconfig",
+      "defconfig",
+      "misc_debug_defconfig",
+      "ranchu64_defconfig",
+      "raphael-stock_defconfig",
+      "raphael_defconfig",
+      "vendor"
+    ],
+    "arch/arm64/boot/dts": [
+      "Makefile",
+      "actions",
+      "al",
+      "allwinner",
+      "altera",
+      "amd",
+      "amlogic",
+      "apm",
+      "arm",
+      "broadcom",
+      "cavium",
+      "exynos",
+      "freescale",
+      "hisilicon",
+      "lg",
+      "marvell",
+      "mediatek",
+      "nvidia",
+      "qcom",
+      "realtek",
+      "renesas",
+      "rockchip",
+      "socionext",
+      "sprd",
+      "xilinx",
+      "zte"
+    ],
+    "techpack": [
+      "Kbuild",
+      "audio",
+      "data",
+      "stub"
+    ],
+    "drivers": [
+      "Kconfig",
+      "Makefile",
+      "accessibility",
+      "acpi",
+      "amba",
+      "android",
+      "ata",
+      "atm",
+      "auxdisplay",
+      "base",
+      "bcma",
+      "block",
+      "bluetooth",
+      "bus",
+      "cdrom",
+      "char",
+      "clk",
+      "clocksource",
+      "connector",
+      "cpufreq",
+      "cpuidle",
+      "crypto",
+      "dax",
+      "dca",
+      "devfreq",
+      "dio",
+      "dma-buf",
+      "dma",
+      "edac",
+      "eisa",
+      "esoc",
+      "extcon",
+      "firewire",
+      "firmware",
+      "fmc",
+      "fpga",
+      "fsi",
+      "gnsssirf",
+      "gpio",
+      "gpu",
+      "hid",
+      "hsi",
+      "hv",
+      "hwmon",
+      "hwspinlock",
+      "hwtracing",
+      "i2c",
+      "ide",
+      "idle",
+      "iio",
+      "infiniband",
+      "input",
+      "iommu",
+      "ipack",
+      "irqchip",
+      "isdn",
+      "leds",
+      "lightnvm",
+      "macintosh",
+      "mailbox",
+      "mcb",
+      "md",
+      "media",
+      "memory",
+      "memstick",
+      "message",
+      "mfd",
+      "misc",
+      "mmc",
+      "mtd",
+      "mux",
+      "net",
+      "nfc",
+      "ntb",
+      "nubus",
+      "nvdimm",
+      "nvme",
+      "nvmem",
+      "of",
+      "oprofile",
+      "parisc",
+      "parport",
+      "pci",
+      "pcmcia",
+      "perf",
+      "phy",
+      "pinctrl",
+      "platform",
+      "pnp",
+      "power",
+      "powercap",
+      "pps",
+      "ps3",
+      "ptp",
+      "pwm",
+      "rapidio",
+      "ras",
+      "regulator",
+      "remoteproc",
+      "reset",
+      "rpmsg",
+      "rtc",
+      "s390",
+      "sbus",
+      "scsi",
+      "sensors",
+      "sfi",
+      "sh",
+      "slimbus",
+      "sn",
+      "soc",
+      "spi",
+      "spmi",
+      "ssb",
+      "staging",
+      "target",
+      "tc",
+      "tee",
+      "thermal",
+      "thunderbolt",
+      "tty",
+      "uio",
+      "usb",
+      "uwb",
+      "vfio",
+      "vhost",
+      "video",
+      "virt",
+      "virtio",
+      "vlynq",
+      "vme",
+      "vservices",
+      "w1",
+      "watchdog",
+      "xen",
+      "zorro"
+    ]
+  },
+  "reference_utsav_display_drivers": {
+    "repo": "UtsavBalar1231/display-drivers",
+    "ref": "psyche-r-oss",
+    "fetch_mode": {
+      "arch/arm64/configs": "git-fallback",
+      "arch/arm64/boot/dts": "git-fallback",
+      "techpack": "git-fallback",
+      "drivers": "git-fallback"
+    },
+    "arch/arm64/configs": [],
+    "arch/arm64/boot/dts": [],
+    "techpack": [],
+    "drivers": []
+  },
+  "reference_utsav_camera_kernel": {
+    "repo": "UtsavBalar1231/camera-kernel",
+    "ref": "main",
+    "fetch_mode": {
+      "arch/arm64/configs": "git-fallback",
+      "arch/arm64/boot/dts": "git-fallback",
+      "techpack": "git-fallback",
+      "drivers": "api"
+    },
+    "arch/arm64/configs": [],
+    "arch/arm64/boot/dts": [],
+    "techpack": [],
+    "drivers": [
+      "Makefile",
+      "cam_cdm",
+      "cam_core",
+      "cam_cpas",
+      "cam_cust",
+      "cam_fd",
+      "cam_icp",
+      "cam_isp",
+      "cam_jpeg",
+      "cam_lrme",
+      "cam_req_mgr",
+      "cam_sensor_module",
+      "cam_smmu",
+      "cam_sync",
+      "cam_utils"
+    ]
+  },
+  "reference_discovery": {
+    "UtsavBalar1231": [
+      {
+        "name": "android_device_xiaomi_raphael",
+        "full_name": "UtsavBalar1231/android_device_xiaomi_raphael",
+        "default_branch": "ruby",
+        "html_url": "https://github.com/UtsavBalar1231/android_device_xiaomi_raphael"
+      },
+      {
+        "name": "android_device_xiaomi_raphael-sepolicy",
+        "full_name": "UtsavBalar1231/android_device_xiaomi_raphael-sepolicy",
+        "default_branch": "android11-release",
+        "html_url": "https://github.com/UtsavBalar1231/android_device_xiaomi_raphael-sepolicy"
+      },
+      {
+        "name": "android_kernel_motorola_msm8937",
+        "full_name": "UtsavBalar1231/android_kernel_motorola_msm8937",
+        "default_branch": "lineage-16.0",
+        "html_url": "https://github.com/UtsavBalar1231/android_kernel_motorola_msm8937"
+      },
+      {
+        "name": "android_kernel_mototola_msm8953",
+        "full_name": "UtsavBalar1231/android_kernel_mototola_msm8953",
+        "default_branch": "9.0",
+        "html_url": "https://github.com/UtsavBalar1231/android_kernel_mototola_msm8953"
+      },
+      {
+        "name": "android_kernel_rockchip_toybrick_prod",
+        "full_name": "UtsavBalar1231/android_kernel_rockchip_toybrick_prod",
+        "default_branch": "rk3399pro-6.1",
+        "html_url": "https://github.com/UtsavBalar1231/android_kernel_rockchip_toybrick_prod"
+      },
+      {
+        "name": "android_kernel_xiaomi_land",
+        "full_name": "UtsavBalar1231/android_kernel_xiaomi_land",
+        "default_branch": "r9.0-caf",
+        "html_url": "https://github.com/UtsavBalar1231/android_kernel_xiaomi_land"
+      },
+      {
+        "name": "android_kernel_xiaomi_sm8150",
+        "full_name": "UtsavBalar1231/android_kernel_xiaomi_sm8150",
+        "default_branch": "master",
+        "html_url": "https://github.com/UtsavBalar1231/android_kernel_xiaomi_sm8150"
+      },
+      {
+        "name": "AnyKernel2",
+        "full_name": "UtsavBalar1231/AnyKernel2",
+        "default_branch": "master",
+        "html_url": "https://github.com/UtsavBalar1231/AnyKernel2"
+      },
+      {
+        "name": "AnyKernel3",
+        "full_name": "UtsavBalar1231/AnyKernel3",
+        "default_branch": "kona",
+        "html_url": "https://github.com/UtsavBalar1231/AnyKernel3"
+      },
+      {
+        "name": "audio-kernel",
+        "full_name": "UtsavBalar1231/audio-kernel",
+        "default_branch": "test",
+        "html_url": "https://github.com/UtsavBalar1231/audio-kernel"
+      },
+      {
+        "name": "camera-kernel",
+        "full_name": "UtsavBalar1231/camera-kernel",
+        "default_branch": "main",
+        "html_url": "https://github.com/UtsavBalar1231/camera-kernel"
+      },
+      {
+        "name": "device_xiaomi_alioth-kernel",
+        "full_name": "UtsavBalar1231/device_xiaomi_alioth-kernel",
+        "default_branch": "Rika",
+        "html_url": "https://github.com/UtsavBalar1231/device_xiaomi_alioth-kernel"
+      },
+      {
+        "name": "device_xiaomi_raphael-kernel",
+        "full_name": "UtsavBalar1231/device_xiaomi_raphael-kernel",
+        "default_branch": "Rika",
+        "html_url": "https://github.com/UtsavBalar1231/device_xiaomi_raphael-kernel"
+      },
+      {
+        "name": "device_xiaomi_sdm845-common",
+        "full_name": "UtsavBalar1231/device_xiaomi_sdm845-common",
+        "default_branch": "bery",
+        "html_url": "https://github.com/UtsavBalar1231/device_xiaomi_sdm845-common"
+      },
+      {
+        "name": "device_xiaomi_sm8250-headers",
+        "full_name": "UtsavBalar1231/device_xiaomi_sm8250-headers",
+        "default_branch": "sapphire",
+        "html_url": "https://github.com/UtsavBalar1231/device_xiaomi_sm8250-headers"
+      },
+      {
+        "name": "display-drivers",
+        "full_name": "UtsavBalar1231/display-drivers",
+        "default_branch": "psyche-r-oss",
+        "html_url": "https://github.com/UtsavBalar1231/display-drivers"
+      },
+      {
+        "name": "eas_kernel_msm8953",
+        "full_name": "UtsavBalar1231/eas_kernel_msm8953",
+        "default_branch": "eas-treble",
+        "html_url": "https://github.com/UtsavBalar1231/eas_kernel_msm8953"
+      },
+      {
+        "name": "firplay_xiaomi_apollo",
+        "full_name": "UtsavBalar1231/firplay_xiaomi_apollo",
+        "default_branch": "master",
+        "html_url": "https://github.com/UtsavBalar1231/firplay_xiaomi_apollo"
+      },
+      {
+        "name": "hardware_qcom-caf_sm8150_display",
+        "full_name": "UtsavBalar1231/hardware_qcom-caf_sm8150_display",
+        "default_branch": "Rika",
+        "html_url": "https://github.com/UtsavBalar1231/hardware_qcom-caf_sm8150_display"
+      }
+    ],
+    "Strawing": [],
+    "fetch_mode": {
+      "UtsavBalar1231": "api",
+      "Strawing": "api-error"
+    }
+  },
+  "meta": {
+    "generator": "Tools/Porting/Fetch_Inventory.py",
+    "cwd": "D:\\GIT\\Kernel-Xiaomi-Umi-6.12"
   }
 }

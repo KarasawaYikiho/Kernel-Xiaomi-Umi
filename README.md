@@ -24,6 +24,13 @@ It is designed to automate Phase2 migration, CI build attempts, diagnostics, and
 
 - SO-TS source reference: `SO-TS/android_kernel_xiaomi_sm8250`
 - URL: <https://github.com/SO-TS/android_kernel_xiaomi_sm8250>
+- Additional driver-reference sources:
+  - `UtsavBalar1231/android_kernel_xiaomi_sm8150`
+  - `UtsavBalar1231/display-drivers`
+  - `UtsavBalar1231/camera-kernel`
+- Notes:
+  - Additional references are used as donor/comparison inputs for driver adaptation, not as blind drop-in replacements.
+  - `Strawing` account is scanned by tooling; if no public kernel/driver repo is found, the inventory records an empty result with timestamped run context.
 
 ## Workflows
 
