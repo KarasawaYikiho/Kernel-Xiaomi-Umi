@@ -9,6 +9,7 @@ OUT = ART / "driver-integration-manifest-sync.txt"
 
 REFERENCE_REPORT = Path("Porting/Reference-Drivers-Analysis.md")
 ROM_REPORT = Path("Porting/OfficialRom-Umi-Os1.0.5.0-Analysis.md")
+EVIDENCE = ART / "driver-integration-evidence.txt"
 
 BASE_REQUIRED = [
     "display_pipeline",
@@ -83,6 +84,19 @@ def _detect_dynamic_partition_signal() -> bool:
     )
 
 
+def _parse_kv(path: Path) -> dict[str, str]:
+    out: dict[str, str] = {}
+    if not path.exists():
+        return out
+    for raw in path.read_text(encoding="utf-8", errors="ignore").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        k, v = line.split("=", 1)
+        out[k.strip()] = v.strip()
+    return out
+
+
 def main() -> int:
     ART.mkdir(parents=True, exist_ok=True)
 
@@ -102,6 +116,35 @@ def main() -> int:
     # ROM evidence checks: if we have report but key signals are missing, keep explicit pending items.
     if rom_ready and not _detect_dynamic_partition_signal():
         required.add("rom_dynamic_partition_baseline")
+
+    # Evidence-driven auto integration (conservative signals only).
+    ev = _parse_kv(EVIDENCE)
+    evidence_promoted: list[str] = []
+
+    if ev.get("camera_signal") == "yes":
+        integrated.add("camera_sensor_module")
+        evidence_promoted.append("camera_sensor_module")
+    if ev.get("display_signal") == "yes":
+        integrated.add("display_pipeline")
+        evidence_promoted.append("display_pipeline")
+    if ev.get("thermal_signal") == "yes":
+        integrated.add("thermal_power_tuning")
+        evidence_promoted.append("thermal_power_tuning")
+    if ev.get("audio_signal") == "yes":
+        integrated.add("audio_stack")
+        evidence_promoted.append("audio_stack")
+    if ev.get("partition_baseline_signal") == "yes":
+        integrated.add("rom_dynamic_partition_baseline")
+        evidence_promoted.append("rom_dynamic_partition_baseline")
+    if ev.get("boot_chain_match") == "yes":
+        integrated.add("rom_boot_chain_consistency")
+        evidence_promoted.append("rom_boot_chain_consistency")
+    if ev.get("dtbo_match") == "yes":
+        integrated.add("rom_dtbo_consistency")
+        evidence_promoted.append("rom_dtbo_consistency")
+    if ev.get("vbmeta_match") == "yes":
+        integrated.add("rom_vbmeta_consistency")
+        evidence_promoted.append("rom_vbmeta_consistency")
 
     # Ensure every required item is either integrated or pending.
     for item in required:
@@ -154,6 +197,8 @@ def main() -> int:
         f"status=ok",
         f"reference_report_ready={'yes' if reference_ready else 'no'}",
         f"rom_report_ready={'yes' if rom_ready else 'no'}",
+        f"evidence_file_present={'yes' if EVIDENCE.exists() else 'no'}",
+        f"evidence_promoted={','.join(sorted(set(evidence_promoted)))}",
         f"integrated_count={len(integrated)}",
         f"pending_count={len(pending)}",
         f"unknown_legacy_lines={len(unknown)}",

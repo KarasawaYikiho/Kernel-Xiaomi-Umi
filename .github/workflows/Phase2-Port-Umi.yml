@@ -120,6 +120,11 @@ jobs:
         run: |
           python3 Tools/Porting/Analyze_Official_Rom_Package.py || true
 
+      - name: Build driver integration evidence
+        if: always()
+        run: |
+          python3 Tools/Porting/Build_Driver_Integration_Evidence.py || true
+
       - name: Validate AnyKernel candidate structure
         if: always()
         run: |

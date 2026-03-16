@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import hashlib
 import os
 
 ART = Path("artifacts")
@@ -33,6 +34,14 @@ def parse_required_bytes(raw: str | None) -> tuple[int, str]:
         return DEFAULT_REQUIRED_BYTES, "default-invalid"
 
 
+def _sha256(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
 def main() -> int:
     required_bytes, parse_note = parse_required_bytes(os.getenv("BOOTIMG_REQUIRED_BYTES"))
 
@@ -43,6 +52,7 @@ def main() -> int:
             "reason=bootimg-not-found",
             "path=",
             "size_bytes=0",
+            "sha256=",
             f"required_bytes={required_bytes}",
             f"required_bytes_parse={parse_note}",
             "size_match=no",
@@ -52,6 +62,7 @@ def main() -> int:
         return 0
 
     size = bootimg.stat().st_size
+    sha = _sha256(bootimg)
 
     # BOOTIMG_REQUIRED_BYTES is treated as the final target size.
     if required_bytes <= 0:
@@ -68,6 +79,7 @@ def main() -> int:
         f"reason={reason}",
         f"path={bootimg.as_posix()}",
         f"size_bytes={size}",
+        f"sha256={sha}",
         f"required_bytes={required_bytes}",
         f"required_bytes_parse={parse_note}",
         f"size_match={size_match}",
