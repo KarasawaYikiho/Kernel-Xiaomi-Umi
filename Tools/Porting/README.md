@@ -50,6 +50,7 @@ This directory contains the automation chain used by `Phase2-Port-Umi.yml`.
 - `bootimg_required_bytes_parse` — parse state (`exact`, `default-empty`, `default-invalid`, `unknown`)
 - `decision-consistency.txt` — semantic consistency check across report/focus/runtime
 - `action-validation-checklist.md` — runtime checklist with blocker snapshot
+- `runtime-validation-summary.md` — one-page runtime gate summary + device-side next step
 - `postprocess-status.txt` — per-step postprocess execution status (`ok` / `failed`)
 - `driver-integration-manifest.txt` — driver subsystem checklist (`integrated:<item>` / `pending:<item>`)
 - `driver-integration-manifest-validate.txt` — manifest format validation result

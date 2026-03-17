@@ -22,6 +22,7 @@ steps=(
   "Build_Status_Badge_Line.py"
   "Build_Artifact_Checksums.py"
   "Build_Action_Validation_Checklist.py"
+  "Build_Runtime_Validation_Summary.py"
 )
 
 status_file="artifacts/postprocess-status.txt"

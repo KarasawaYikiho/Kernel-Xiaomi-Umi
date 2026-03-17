@@ -21,6 +21,7 @@ OPTIONAL = [
     "bootimg-build.txt",
     "driver-integration-status.txt",
     "action-validation-checklist.md",
+    "runtime-validation-summary.md",
 ]
 
 

@@ -59,6 +59,7 @@ def main() -> int:
 
     if r.get('runtime_ready', 'no') == 'yes':
         md.append("- `action-validation-checklist.md`")
+        md.append("- `runtime-validation-summary.md`")
 
     OUT.write_text("\n".join(md) + "\n", encoding="utf-8")
     print(f"wrote {OUT}")
