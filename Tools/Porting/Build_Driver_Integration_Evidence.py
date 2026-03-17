@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 from pathlib import Path
 
@@ -9,6 +10,7 @@ ART = Path("artifacts")
 OUT = ART / "driver-integration-evidence.txt"
 ROM_REPORT = Path("Porting/OfficialRom-Umi-Os1.0.5.0-Analysis.md")
 REF_REPORT = Path("Porting/Reference-Drivers-Analysis.md")
+INVENTORY = Path("Porting/Inventory.json")
 COPIED_DTS = ART / "copied_dts.txt"
 
 
@@ -57,12 +59,48 @@ def _contains_any(text: str, keys: list[str]) -> bool:
     return any(k.lower() in low for k in keys)
 
 
+def _load_inventory() -> dict:
+    if not INVENTORY.exists():
+        return {}
+    try:
+        return json.loads(INVENTORY.read_text(encoding="utf-8", errors="ignore"))
+    except Exception:
+        return {}
+
+
+def _collect_inventory_tokens(inventory: dict) -> str:
+    chunks: list[str] = []
+    for repo_name, payload in inventory.items():
+        if not isinstance(payload, dict):
+            continue
+        repo = str(payload.get("repo", ""))
+        ref = str(payload.get("ref", ""))
+        chunks.extend([repo_name, repo, ref])
+        for section in ("arch/arm64/configs", "arch/arm64/boot/dts", "techpack", "drivers"):
+            value = payload.get(section, [])
+            if isinstance(value, list):
+                chunks.extend(str(x) for x in value)
+    return "\n".join(chunks)
+
+
+def _inventory_list(inventory: dict, repo_key: str, section: str) -> list[str]:
+    payload = inventory.get(repo_key, {}) if isinstance(inventory, dict) else {}
+    if not isinstance(payload, dict):
+        return []
+    value = payload.get(section, [])
+    if not isinstance(value, list):
+        return []
+    return [str(x).lower() for x in value]
+
+
 def main() -> int:
     ART.mkdir(parents=True, exist_ok=True)
 
     rom_text = _load_text(ROM_REPORT)
     ref_text = _load_text(REF_REPORT)
     copied_text = _load_text(COPIED_DTS)
+    inventory = _load_inventory()
+    inventory_text = _collect_inventory_tokens(inventory)
 
     rom_hashes = _extract_rom_hashes(rom_text)
 
@@ -91,13 +129,18 @@ def main() -> int:
     if vbmeta_local and vbmeta_key in rom_hashes:
         vbmeta_match = "yes" if _sha256(vbmeta_local) == rom_hashes[vbmeta_key] else "no"
 
-    # Driver-area evidence (conservative text/path signals)
-    joined = ref_text + "\n" + copied_text
-    cam_signal = _contains_any(joined, ["camera", "cam_sensor", "cam_isp", "camss"])
-    cam_isp_signal = _contains_any(joined, ["cam_isp", "camss", "isp", "msm_isp"])
-    dsp_signal = _contains_any(joined, ["display", "dsi", "drm", "msm_drm"])
-    thm_signal = _contains_any(joined, ["thermal", "power", "qcom", "cpufreq"])
-    aud_signal = _contains_any(joined, ["audio", "snd", "wcd", "q6"])
+    # Driver-area evidence (conservative text/path signals + inventory structure signals)
+    joined = ref_text + "\n" + copied_text + "\n" + inventory_text
+    so_ts_techpack = set(_inventory_list(inventory, "so_ts", "techpack"))
+    so_ts_drivers = set(_inventory_list(inventory, "so_ts", "drivers"))
+    camera_ref_drivers = set(_inventory_list(inventory, "reference_utsav_camera_kernel", "drivers"))
+    display_ref_repo = str(inventory.get("reference_utsav_display_drivers", {}).get("repo", "")).lower() if isinstance(inventory.get("reference_utsav_display_drivers", {}), dict) else ""
+
+    cam_signal = _contains_any(joined, ["camera", "cam_sensor", "cam_isp", "camss", "camera-kernel"]) or bool(camera_ref_drivers)
+    cam_isp_signal = _contains_any(joined, ["cam_isp", "camss", "isp", "msm_isp"]) or ("cam_isp" in camera_ref_drivers)
+    dsp_signal = _contains_any(joined, ["display", "dsi", "drm", "msm_drm"]) or ("display" in so_ts_techpack) or (display_ref_repo == "utsavbalar1231/display-drivers")
+    thm_signal = _contains_any(joined, ["thermal", "power", "qcom", "cpufreq"]) or ("thermal" in so_ts_drivers)
+    aud_signal = _contains_any(joined, ["audio", "snd", "wcd", "q6", "soundwire", "slimbus"]) or ("audio" in so_ts_techpack) or ("soundwire" in so_ts_drivers) or ("slimbus" in so_ts_drivers)
     xiaomi_signal = _contains_any(joined, ["xiaomi", "umi", "sm8250"])
 
     ref_camera_alignment = "yes" if cam_signal else "no"
