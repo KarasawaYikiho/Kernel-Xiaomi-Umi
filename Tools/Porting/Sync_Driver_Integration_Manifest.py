@@ -27,10 +27,13 @@ REF_REQUIRED = [
 ]
 
 ROM_REQUIRED = [
+    "rom_dynamic_partition_baseline",
+]
+
+ROM_OPTIONAL_COMPARE = [
     "rom_boot_chain_consistency",
     "rom_dtbo_consistency",
     "rom_vbmeta_consistency",
-    "rom_dynamic_partition_baseline",
 ]
 
 
@@ -121,6 +124,15 @@ def main() -> int:
     ev = _parse_kv(EVIDENCE)
     evidence_promoted: list[str] = []
 
+    compare_required: set[str] = set()
+    if ev.get("boot_local_path"):
+        compare_required.add("rom_boot_chain_consistency")
+    if ev.get("dtbo_local_path"):
+        compare_required.add("rom_dtbo_consistency")
+    if ev.get("vbmeta_local_path"):
+        compare_required.add("rom_vbmeta_consistency")
+    required.update(compare_required)
+
     if ev.get("camera_signal") == "yes":
         integrated.add("camera_sensor_module")
         evidence_promoted.append("camera_sensor_module")
@@ -167,8 +179,8 @@ def main() -> int:
         if item not in integrated:
             pending.add(item)
 
-    # integrated wins over pending when both exist.
-    pending = {x for x in pending if x not in integrated}
+    # integrated wins over pending when both exist; stale non-required pending items are dropped.
+    pending = {x for x in pending if x not in integrated and x in required}
 
     out_lines: list[str] = []
     out_lines.append("# Driver integration manifest")
@@ -189,11 +201,11 @@ def main() -> int:
 
     out_lines.append("")
     out_lines.append("# Official ROM validation backlog")
-    for item in sorted({ _normalize_item(x) for x in ROM_REQUIRED }):
+    for item in sorted({ _normalize_item(x) for x in ROM_REQUIRED } | compare_required):
         prefix = "integrated" if item in integrated else "pending"
         out_lines.append(f"{prefix}:{item}")
 
-    extra_items = sorted((integrated | pending) - required)
+    extra_items = sorted(integrated - required)
     if extra_items:
         out_lines.append("")
         out_lines.append("# Extra custom items")
