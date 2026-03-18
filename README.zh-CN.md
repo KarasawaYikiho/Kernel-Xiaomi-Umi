@@ -84,6 +84,7 @@ Runtime gate 说明：
 实机验证后：
 - 填写 `artifacts/runtime-validation-input.md`
 - 重新执行 postprocess，即可自动生成 `runtime-validation-result.txt` 并刷新 `phase2-report / next-focus / badge / summary`
+- 如果实机验证 PASS，决策流会自动从 `ready-for-action-test` 切到 Release 收口（`prepare-release-bootimg`）或剩余 ROM / driver 对齐收尾（`integrate-drivers-phase3`）
 
 ### `Build-Umi-Kernel.yml`
 

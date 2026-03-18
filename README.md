@@ -85,6 +85,7 @@ Important inputs:
 After device runtime validation:
 - Fill `artifacts/runtime-validation-input.md`
 - Re-run postprocess to refresh `runtime-validation-result.txt`, `phase2-report.txt`, `next-focus.txt`, badge, metrics, and summaries
+- If runtime validation passes, the decision flow automatically shifts from `ready-for-action-test` into release hardening (`prepare-release-bootimg`) or remaining ROM / driver alignment follow-up (`integrate-drivers-phase3`)
 
 ### `Build-Umi-Kernel.yml`
 

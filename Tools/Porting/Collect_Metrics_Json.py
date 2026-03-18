@@ -18,7 +18,7 @@ def main() -> int:
     consistency = parse_kv(ART / "decision-consistency.txt")
     runtime_result = parse_kv(ART / "runtime-validation-result.txt")
 
-    runtime_gate_status = "ready" if report.get("runtime_ready", "no") == "yes" and consistency.get("status", "unknown") in ("ok", "unknown") and report.get("driver_integration_status", "pending") == "complete" else "blocked"
+    runtime_gate_status = "ready" if report.get("runtime_ready", "no") == "yes" and consistency.get("status", "unknown") in ("ok", "unknown") and driver_integration_allows_runtime(report.get("driver_integration_status", "pending"), report.get("driver_integration_pending", "")) else "blocked"
 
     obj = {
         "run": {

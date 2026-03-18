@@ -111,6 +111,25 @@ def main() -> int:
             "",
         ])
 
+    next_steps = [
+        "- Flash `AnyKernel3-umi-candidate.zip` using the prepared validation flow.",
+        "- Fill `runtime-validation-input.md` after testing, then run postprocess again.",
+        "- If something fails, capture dmesg/logcat and the failing checklist step index.",
+    ]
+    runtime_overall = runtime_result.get("overall", "UNKNOWN")
+    if runtime_overall == "FAIL":
+        next_steps = [
+            "- Inspect `runtime-validation-result.txt` and `phase2-report.txt` for the failing step.",
+            "- Attach dmesg/logcat plus the exact failed checklist item for the next patch round.",
+            "- Keep the known-good rollback path ready before the next test build.",
+        ]
+    elif runtime_overall == "PASS":
+        next_steps = [
+            "- Runtime validation passed; switch focus from device smoke test to release hardening.",
+            "- If `bootimg_status` is not `ok`, continue with release `boot.img` preparation.",
+            "- If release packaging is already green, close remaining ROM / driver alignment follow-ups.",
+        ]
+
     md.extend([
         "## First Files To Open",
         "- `runtime-validation-summary.md`",
@@ -120,9 +139,7 @@ def main() -> int:
         "- `artifact-summary.md`",
         "",
         "## Device-Side Next Step",
-        "- Flash `AnyKernel3-umi-candidate.zip` using the prepared validation flow.",
-        "- Fill `runtime-validation-input.md` after testing, then run postprocess again.",
-        "- If something fails, capture dmesg/logcat and the failing checklist step index.",
+        *next_steps,
         "",
     ])
 
