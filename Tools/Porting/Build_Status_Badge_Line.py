@@ -2,11 +2,10 @@
 from pathlib import Path
 
 from Kv_Utils import parse_kv
-from Phase2_Decision import derive_runtime_ready
+from Phase2_Decision import derive_runtime_ready, driver_integration_allows_runtime
 
 ART = Path("artifacts")
 OUT = ART / "status-badge-line.txt"
-
 
 
 def main() -> int:
@@ -21,12 +20,13 @@ def main() -> int:
     next_action = r.get("next_action", "collect-more-data")
     runtime_ready = r.get("runtime_ready", "no")
     driver_integration = r.get("driver_integration_status", "pending")
+    driver_pending = r.get("driver_integration_pending", "")
     runtime_result = r.get("runtime_validation_overall", "UNKNOWN")
     failed_step = r.get("runtime_validation_failed_step", "")
 
     expected_runtime_ready = derive_runtime_ready(next_action)
     runtime_marker = "ok" if runtime_ready == expected_runtime_ready else f"mismatch(expected:{expected_runtime_ready})"
-    runtime_gate = "ready" if runtime_ready == "yes" and driver_integration == "complete" else "blocked"
+    runtime_gate = "ready" if runtime_ready == "yes" and driver_integration_allows_runtime(driver_integration, driver_pending) else "blocked"
     runtime_result_suffix = f"/{failed_step}" if failed_step else ""
 
     line = (

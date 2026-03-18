@@ -2,10 +2,10 @@
 from pathlib import Path
 
 from Kv_Utils import parse_kv
+from Phase2_Decision import driver_integration_allows_runtime
 
 ART = Path("artifacts")
 OUT = ART / "artifact-summary.md"
-
 
 
 def main() -> int:
@@ -16,9 +16,8 @@ def main() -> int:
     d = parse_kv(ART / "decision-consistency.txt")
     rv = parse_kv(ART / "runtime-validation-result.txt")
 
-    next_action = r.get('next_action', '')
-
-    runtime_gate = "ready" if r.get('runtime_ready', 'no') == 'yes' and r.get('driver_integration_status', 'pending') == 'complete' and d.get('status', 'unknown') in ('ok', 'unknown') else 'blocked'
+    next_action = r.get("next_action", "")
+    runtime_gate = "ready" if r.get("runtime_ready", "no") == "yes" and driver_integration_allows_runtime(r.get("driver_integration_status", "pending"), r.get("driver_integration_pending", "")) and d.get("status", "unknown") in ("ok", "unknown") else "blocked"
 
     md = [
         "# Phase2 Artifact Summary",
@@ -33,6 +32,7 @@ def main() -> int:
         f"- Runtime Gate: `{runtime_gate}`",
         f"- Runtime Ready: `{r.get('runtime_ready', 'no')}`",
         f"- Driver Integration: `{r.get('driver_integration_status', 'pending')}` ({r.get('driver_integration_reason', 'n/a')})",
+        f"- Driver Follow-ups: `{r.get('driver_integration_pending', '') or 'none'}`",
         f"- Decision Consistency: `{d.get('status', 'unknown')}`",
         f"- Runtime Validation Result: `{rv.get('overall', 'UNKNOWN')}` ({rv.get('status', 'missing_input')})",
         f"- Runtime Validation Failed Step: `{rv.get('failed_step', '') or 'none'}`",
@@ -55,20 +55,24 @@ def main() -> int:
         "- `anykernel-info.txt`",
     ]
 
-    if next_action == 'prepare-release-bootimg':
+    if next_action == "prepare-release-bootimg":
         md.extend([
             "- `bootimg-info.txt`",
             "- `bootimg-build.txt`",
         ])
 
-    if next_action == 'integrate-drivers-phase3':
-        md.append("- `driver-integration-status.txt`")
-        md.append("- `Porting/Reference-Drivers-Analysis.md`")
-        md.append("- `Porting/OfficialRom-Umi-Os1.0.5.0-Analysis.md`")
+    if next_action == "integrate-drivers-phase3":
+        md.extend([
+            "- `driver-integration-status.txt`",
+            "- `Porting/Reference-Drivers-Analysis.md`",
+            "- `Porting/OfficialRom-Umi-Os1.0.5.0-Analysis.md`",
+        ])
 
-    if r.get('runtime_ready', 'no') == 'yes':
-        md.append("- `action-validation-checklist.md`")
-        md.append("- `runtime-validation-summary.md`")
+    if r.get("runtime_ready", "no") == "yes":
+        md.extend([
+            "- `action-validation-checklist.md`",
+            "- `runtime-validation-summary.md`",
+        ])
 
     OUT.write_text("\n".join(md) + "\n", encoding="utf-8")
     print(f"wrote {OUT}")

@@ -27,6 +27,14 @@ REPORT_NEXT_TO_FOCUS: dict[str, str] = {
     "analyze-runtime-failure": "analyze-runtime-failure",
 }
 
+RUNTIME_SAFE_DRIVER_PENDING: set[str] = {
+    "rom_boot_chain_consistency",
+    "rom_dtbo_consistency",
+    "rom_vbmeta_consistency",
+    "rom_dynamic_partition_baseline",
+    "partition_baseline_not_confirmed",
+}
+
 
 def is_nonzero_rc(value: str) -> bool:
     return value not in ("0", "n/a")
@@ -39,6 +47,37 @@ def parse_float(value: str, default: float = 0.0) -> float:
         return default
 
 
+def split_csv(value: str) -> list[str]:
+    if not value:
+        return []
+    return [x.strip() for x in value.split(",") if x.strip()]
+
+
+def driver_integration_runtime_blockers(
+    driver_integration_status: str,
+    driver_integration_pending: str = "",
+) -> list[str]:
+    if driver_integration_status in ("complete", "unknown"):
+        return []
+    pending = split_csv(driver_integration_pending)
+    blocking = [item for item in pending if item not in RUNTIME_SAFE_DRIVER_PENDING]
+    if blocking:
+        return blocking
+    if driver_integration_status == "partial" and pending:
+        return []
+    return pending or [f"driver_integration_status={driver_integration_status}"]
+
+
+def driver_integration_allows_runtime(
+    driver_integration_status: str,
+    driver_integration_pending: str = "",
+) -> bool:
+    return not driver_integration_runtime_blockers(
+        driver_integration_status=driver_integration_status,
+        driver_integration_pending=driver_integration_pending,
+    )
+
+
 def derive_next_action(
     *,
     defconfig_rc: str,
@@ -49,6 +88,7 @@ def derive_next_action(
     anykernel_validate_status: str,
     bootimg_status: str,
     driver_integration_status: str,
+    driver_integration_pending: str = "",
     runtime_validation_overall: str = "UNKNOWN",
 ) -> str:
     next_action = "collect-more-data"
@@ -66,21 +106,20 @@ def derive_next_action(
     ):
         next_action = "ready-for-action-test"
 
-    # Packaging blockers still override candidate readiness.
     if flash_status == "candidate" and (
         anykernel_ok != "yes" or anykernel_validate_status not in ("ok", "unknown")
     ):
         next_action = "fix-anykernel-packaging"
 
-    # Driver integration must complete before asking for runtime validation.
-    if next_action == "ready-for-action-test" and driver_integration_status != "complete":
+    if next_action == "ready-for-action-test" and not driver_integration_allows_runtime(
+        driver_integration_status=driver_integration_status,
+        driver_integration_pending=driver_integration_pending,
+    ):
         next_action = "integrate-drivers-phase3"
 
-    # Device-side validation failure should explicitly redirect the workflow.
     if runtime_validation_overall == "FAIL":
         next_action = "analyze-runtime-failure"
 
-    # Release boot image is a later-stage delivery gate, not a prerequisite for runtime testing.
     if next_action == "collect-more-data" and bootimg_status in ("missing", "size_mismatch"):
         next_action = "prepare-release-bootimg"
 
@@ -107,7 +146,6 @@ def derive_next_focus(
         failed = runtime_validation_failed_step or "runtime-validation"
         return "analyze-runtime-failure", f"runtime_validation_failed:{failed}"
 
-    # Keep focus semantically pinned to report decision when possible.
     mapped = REPORT_NEXT_TO_FOCUS.get(report_next_action)
     if mapped:
         return mapped, "report_next_action"

@@ -3,7 +3,7 @@ from pathlib import Path
 import json
 
 from Kv_Utils import parse_kv
-from Phase2_Decision import DEFAULT_BOOTIMG_REQUIRED_BYTES_STR
+from Phase2_Decision import DEFAULT_BOOTIMG_REQUIRED_BYTES_STR, driver_integration_allows_runtime
 
 ART = Path("artifacts")
 OUT = ART / "phase2-metrics.json"
@@ -80,4 +80,6 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    raise SystemExit(main())
+
     raise SystemExit(main())

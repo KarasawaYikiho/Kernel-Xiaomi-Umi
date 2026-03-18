@@ -2,6 +2,7 @@
 from pathlib import Path
 
 from Kv_Utils import parse_kv
+from Phase2_Decision import driver_integration_runtime_blockers
 
 ART = Path("artifacts")
 OUT = ART / "runtime-validation-summary.md"
@@ -27,6 +28,8 @@ def main() -> int:
     consistency_status = consistency.get("status", "unknown")
     consistency_errors = consistency.get("errors", "")
     driver_status = report.get("driver_integration_status", "pending")
+    driver_pending = report.get("driver_integration_pending", "")
+    driver_runtime_blockers = driver_integration_runtime_blockers(driver_status, driver_pending)
     bootimg_status = report.get("bootimg_status", "missing")
     bootimg_build_status = report.get("bootimg_build_status", "unknown")
     bootimg_build_missing = report.get("bootimg_build_missing", "")
@@ -44,8 +47,8 @@ def main() -> int:
         runtime_blockers.append("anykernel_ok!=yes")
     if report.get("anykernel_validate_status", "unknown") not in ("ok", "unknown"):
         runtime_blockers.append(f"anykernel_validate_status={report.get('anykernel_validate_status', 'unknown')}")
-    if driver_status != "complete":
-        runtime_blockers.append(f"driver_integration_status={driver_status}")
+    if driver_runtime_blockers:
+        runtime_blockers.extend([f"driver_integration_pending={x}" for x in driver_runtime_blockers])
     if consistency_status not in ("ok", "unknown"):
         runtime_blockers.append(f"decision_consistency={consistency_status}")
     if consistency_errors:
@@ -60,6 +63,8 @@ def main() -> int:
         release_followups.append(f"bootimg_build_status={bootimg_build_status}")
     if bootimg_build_missing:
         release_followups.extend([f"bootimg_build_missing={x}" for x in _split_csv(bootimg_build_missing)])
+    if driver_pending:
+        release_followups.extend([f"driver_followup={x}" for x in _split_csv(driver_pending) if x not in driver_runtime_blockers])
 
     headline = "READY FOR DEVICE RUNTIME VALIDATION" if not runtime_blockers else "NOT READY FOR DEVICE RUNTIME VALIDATION"
 
@@ -94,14 +99,14 @@ def main() -> int:
         md.extend([
             "## Runtime Gate Result",
             "- Candidate packaging is ready for device-side runtime validation.",
-            "- Driver integration gate is complete.",
-            "- Remaining release bootimg work is tracked separately and does not block AnyKernel-based runtime testing.",
+            "- Driver integration has no remaining runtime-blocking items.",
+            "- Remaining release/ROM alignment work is tracked separately and does not block AnyKernel-based runtime testing.",
             "",
         ])
 
     if release_followups:
         md.extend([
-            "## Release Bootimg Follow-ups",
+            "## Release / Alignment Follow-ups",
             *[f"- {x}" for x in release_followups],
             "",
         ])

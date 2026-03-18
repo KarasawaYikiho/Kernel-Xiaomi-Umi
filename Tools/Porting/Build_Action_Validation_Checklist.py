@@ -2,11 +2,10 @@
 from pathlib import Path
 
 from Kv_Utils import parse_kv
-from Phase2_Decision import DEFAULT_BOOTIMG_REQUIRED_BYTES_STR
+from Phase2_Decision import DEFAULT_BOOTIMG_REQUIRED_BYTES_STR, driver_integration_runtime_blockers
 
 ART = Path("artifacts")
 OUT = ART / "action-validation-checklist.md"
-
 
 
 def main() -> int:
@@ -30,7 +29,10 @@ def main() -> int:
     consistency_errors = consistency.get("errors", "")
     driver_integration_status = report.get("driver_integration_status", "pending")
     driver_integration_reason = report.get("driver_integration_reason", "n/a")
-    blockers = []
+    driver_integration_pending = report.get("driver_integration_pending", "")
+    driver_runtime_blockers = driver_integration_runtime_blockers(driver_integration_status, driver_integration_pending)
+
+    blockers: list[str] = []
     if report.get("defconfig_rc", "n/a") not in ("0", "n/a"):
         blockers.append(f"defconfig_rc={report.get('defconfig_rc', 'n/a')}")
     if report.get("build_rc", "n/a") not in ("0", "n/a"):
@@ -41,19 +43,28 @@ def main() -> int:
         blockers.append("anykernel_ok!=yes")
     if report.get("anykernel_validate_status", "unknown") not in ("ok", "unknown"):
         blockers.append(f"anykernel_validate_status={report.get('anykernel_validate_status', 'unknown')}")
-    release_blockers = []
-    if bootimg_status != "ok":
-        release_blockers.append(f"bootimg_status={bootimg_status}")
-    if bootimg_build_status not in ("ok", "unknown"):
-        release_blockers.append(f"bootimg_build_status={bootimg_build_status}")
-    if bootimg_build_missing:
-        release_blockers.append(f"bootimg_build_missing={bootimg_build_missing}")
     if consistency_status not in ("ok", "unknown"):
         blockers.append(f"decision_consistency={consistency_status}")
     if consistency_errors:
         blockers.append(f"decision_consistency_errors={consistency_errors}")
-    if driver_integration_status != "complete":
-        blockers.append(f"driver_integration_status={driver_integration_status}")
+    if driver_runtime_blockers:
+        blockers.extend([f"driver_integration_pending={x}" for x in driver_runtime_blockers])
+    if runtime_ready != "yes":
+        blockers.append(f"runtime_ready={runtime_ready}")
+
+    release_followups: list[str] = []
+    if bootimg_status != "ok":
+        release_followups.append(f"bootimg_status={bootimg_status}")
+    if bootimg_build_status not in ("ok", "unknown"):
+        release_followups.append(f"bootimg_build_status={bootimg_build_status}")
+    if bootimg_build_missing:
+        release_followups.append(f"bootimg_build_missing={bootimg_build_missing}")
+    if driver_integration_pending:
+        release_followups.extend([
+            f"driver_followup={x}"
+            for x in [item.strip() for item in driver_integration_pending.split(",") if item.strip()]
+            if x not in driver_runtime_blockers
+        ])
 
     md = [
         "# Phase2 Runtime Validation Checklist",
@@ -74,9 +85,10 @@ def main() -> int:
         f"- driver_integration_reason: `{driver_integration_reason}`",
         "",
         "## Decision",
-        "- [ ] If `runtime_ready=yes`, `decision_consistency=ok`, and `driver_integration_status=complete`, proceed with device runtime validation.",
+        "- [ ] If `runtime_ready=yes` and `decision_consistency=ok`, proceed with device runtime validation.",
+        "- [ ] `driver_integration_status` may remain `partial` when the only pending items are ROM/release alignment checks that do not block AnyKernel-based runtime validation.",
         "- [ ] `bootimg_status` is tracked separately for release delivery and does not block AnyKernel-based runtime validation by itself.",
-        "- [ ] If runtime gate is not satisfied, stop and finish driver integration / report blockers first.",
+        "- [ ] If runtime gate is not satisfied, stop and finish the listed runtime blockers first.",
         "",
     ]
 
@@ -87,10 +99,10 @@ def main() -> int:
             "",
         ])
 
-    if release_blockers:
+    if release_followups:
         md.extend([
-            "## Release Bootimg Follow-ups (non-blocking for runtime validation)",
-            *[f"- {b}" for b in release_blockers],
+            "## Release / Alignment Follow-ups (non-blocking for runtime validation)",
+            *[f"- {b}" for b in release_followups],
             "",
         ])
 
