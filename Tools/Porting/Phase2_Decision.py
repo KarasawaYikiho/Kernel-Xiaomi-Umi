@@ -146,6 +146,8 @@ def derive_runtime_ready(next_action: str) -> str:
 def derive_next_focus(
     *,
     report_next_action: str,
+    artifact_completeness: str = "unknown",
+    build_context_present: str = "unknown",
     build_rc: str,
     dtbs_rc: str,
     flash_status: str,
@@ -160,8 +162,12 @@ def derive_next_focus(
         return "analyze-runtime-failure", f"runtime_validation_failed:{failed}"
 
     if (
-        flash_status == "unknown"
-        and manifest_hit_ratio <= 0.0
+        artifact_completeness == "partial"
+        or build_context_present == "no"
+        or flash_status == "unknown"
+        or flash_status == "not_ready"
+    ) and (
+        manifest_hit_ratio <= 0.0
         and anykernel_ok != "yes"
         and anykernel_validate_status == "missing"
         and not is_nonzero_rc(build_rc)

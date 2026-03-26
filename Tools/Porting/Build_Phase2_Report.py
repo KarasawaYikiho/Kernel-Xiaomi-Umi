@@ -93,6 +93,8 @@ def main() -> int:
         f"miss_top_buckets={missa.get('top_buckets', '')}",
         f"artifact_completeness={complete.get('status', 'unknown')}",
         f"required_missing={complete.get('required_missing', 'n/a')}",
+        f"phase2_required_missing={complete.get('phase2_required_missing', 'n/a')}",
+        f"build_context_present={complete.get('build_context_present', 'unknown')}",
         f"driver_integration_status={driver.get('status', 'pending')}",
         f"driver_integration_reason={driver.get('reason', 'n/a')}",
         f"driver_integration_pending={driver.get('pending', '')}",

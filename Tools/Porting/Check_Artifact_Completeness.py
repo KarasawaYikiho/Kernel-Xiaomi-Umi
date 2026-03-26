@@ -54,10 +54,10 @@ def main() -> int:
 
     if missing_required:
         status = "incomplete"
+    elif not build_context_present:
+        status = "partial"
     elif build_context_present and missing_phase2:
         status = "incomplete"
-    elif missing_phase2:
-        status = "partial"
     else:
         status = "ok"
 

@@ -6,12 +6,15 @@ anykernel_ok=no
 anykernel_has_imagegz=no
 anykernel_has_dtb=no
 anykernel_dtb_source=
+anykernel_reason=imagegz-missing
 
 if [ -f out/arch/arm64/boot/Image.gz ]; then
   anykernel_has_imagegz=yes
+  anykernel_reason=clone-failed
   rm -rf anykernel3
   git clone --depth=1 https://github.com/osm0sis/AnyKernel3.git anykernel3 || true
   if [ -d anykernel3 ]; then
+    anykernel_reason=zip-build-failed
     cp -v out/arch/arm64/boot/Image.gz anykernel3/Image.gz || true
 
     # Optional: include first matched umi-related dtb as dtb
@@ -29,12 +32,14 @@ if [ -f out/arch/arm64/boot/Image.gz ]; then
 
     if (cd anykernel3 && zip -r9 ../artifacts/AnyKernel3-umi-candidate.zip . -x ".git/*"); then
       anykernel_ok=yes
+      anykernel_reason=ok
     fi
   fi
 fi
 
 {
   echo "anykernel_ok=$anykernel_ok"
+  echo "reason=$anykernel_reason"
   echo "has_imagegz=$anykernel_has_imagegz"
   echo "has_dtb=$anykernel_has_dtb"
   echo "dtb_source=$anykernel_dtb_source"
