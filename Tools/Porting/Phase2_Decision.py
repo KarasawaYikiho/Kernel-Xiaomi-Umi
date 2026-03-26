@@ -122,12 +122,18 @@ def derive_next_action(
     elif runtime_validation_overall == "PASS":
         if bootimg_status in ("missing", "size_mismatch", "invalid_format"):
             next_action = "prepare-release-bootimg"
-        elif driver_integration_status != "complete" and split_csv(driver_integration_pending):
+        elif driver_integration_status != "complete" and split_csv(
+            driver_integration_pending
+        ):
             next_action = "integrate-drivers-phase3"
         else:
             next_action = "collect-more-data"
 
-    if next_action == "collect-more-data" and bootimg_status in ("missing", "size_mismatch", "invalid_format"):
+    if next_action == "collect-more-data" and bootimg_status in (
+        "missing",
+        "size_mismatch",
+        "invalid_format",
+    ):
         next_action = "prepare-release-bootimg"
 
     return next_action
@@ -152,6 +158,16 @@ def derive_next_focus(
     if runtime_validation_overall == "FAIL":
         failed = runtime_validation_failed_step or "runtime-validation"
         return "analyze-runtime-failure", f"runtime_validation_failed:{failed}"
+
+    if (
+        flash_status == "unknown"
+        and manifest_hit_ratio <= 0.0
+        and anykernel_ok != "yes"
+        and anykernel_validate_status == "missing"
+        and not is_nonzero_rc(build_rc)
+        and not is_nonzero_rc(dtbs_rc)
+    ):
+        return "collect-more-data", "missing_phase2_artifacts"
 
     mapped = REPORT_NEXT_TO_FOCUS.get(report_next_action)
     if mapped:

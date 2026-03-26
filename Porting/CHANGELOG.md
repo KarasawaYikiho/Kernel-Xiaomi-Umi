@@ -9,6 +9,7 @@
 - Prefer the local official UMI ROM package as the first release `boot.img` fallback and expose ROM boot size/hash alignment in `bootimg-info.txt`.
 - Raised artifact readiness from a DTB-only heuristic to a ROM-aware gate that also records release readiness, AnyKernel validity, DTB manifest hits, and official boot image alignment across reports, badges, and metrics.
 - Hardened shell entrypoints to auto-detect `python3` or `python`, so local Windows reruns of postprocess/build helpers no longer fail just because `python3` is absent.
+- Added local postprocess fallback metadata and downgraded artifact completeness to `partial` when Phase2-only build artifacts are absent, preventing misleading DTB-focused next-step recommendations on ROM-only validation runs.
 
 ## 2026-03-11
 
