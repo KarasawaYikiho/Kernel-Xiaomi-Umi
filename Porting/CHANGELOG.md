@@ -13,6 +13,7 @@
 - Made DTB manifest collection and artifact packaging more resilient for weak/local environments by keeping empty DTB outputs explicit, enriching AnyKernel reasons, and skipping zip packaging gracefully when the host lacks `zip`.
 - Improved AnyKernel candidate diagnostics to reuse existing templates, fall back to `artifacts/Image.gz`, and surface the exact packaging blocker in reports, badges, and metrics.
 - Added `target_dtb_manifest_debug.txt` so DTB candidate inference is traceable from source path to generated alias, and surfaced DTB debug artifacts in summary/index outputs.
+- Tightened driver-integration progress so ROM boot/dtbo/vbmeta consistency stays pending until actually verified, and shifted runtime guidance toward Magisk patching when the ROM-aligned `artifacts/boot.img` is already ready.
 
 ## 2026-03-11
 

@@ -26,7 +26,9 @@ def main() -> int:
     reference_ready = reference_report.exists()
     rom_ready = rom_report.exists()
     has_camera_focus = _has_text(reference_report, "cam_sensor_module")
-    has_partition_baseline = _has_text(rom_report, "dynamic partition") or _has_text(rom_report, "dynamic partitions")
+    has_partition_baseline = _has_text(rom_report, "dynamic partition") or _has_text(
+        rom_report, "dynamic partitions"
+    )
 
     integrated_count = 0
     pending = []
@@ -57,10 +59,15 @@ def main() -> int:
     if integrated_count >= 3 and not pending:
         status = "complete"
         reason = "integration_manifest_complete"
+    elif integrated_count > 0 and pending:
+        status = "partial"
+        reason = "integration_manifest_partial_with_followups"
     elif integrated_count > 0:
         status = "partial"
         reason = "integration_manifest_partial"
-    elif manifest.exists() and manifest_validate_status in ("ok", "unknown") and pending:
+    elif (
+        manifest.exists() and manifest_validate_status in ("ok", "unknown") and pending
+    ):
         status = "pending"
         reason = "integration_backlog_initialized"
     else:
@@ -68,17 +75,20 @@ def main() -> int:
         reason = "integration_manifest_missing_or_empty"
 
     OUT.write_text(
-        "\n".join([
-            f"status={status}",
-            f"reason={reason}",
-            f"integrated_count={integrated_count}",
-            f"reference_report_ready={'yes' if reference_ready else 'no'}",
-            f"rom_baseline_ready={'yes' if rom_ready else 'no'}",
-            f"camera_focus_ready={'yes' if has_camera_focus else 'no'}",
-            f"partition_baseline_ready={'yes' if has_partition_baseline else 'no'}",
-            f"manifest_validate_status={manifest_validate_status}",
-            "pending=" + ",".join(dict.fromkeys(pending)),
-        ]) + "\n",
+        "\n".join(
+            [
+                f"status={status}",
+                f"reason={reason}",
+                f"integrated_count={integrated_count}",
+                f"reference_report_ready={'yes' if reference_ready else 'no'}",
+                f"rom_baseline_ready={'yes' if rom_ready else 'no'}",
+                f"camera_focus_ready={'yes' if has_camera_focus else 'no'}",
+                f"partition_baseline_ready={'yes' if has_partition_baseline else 'no'}",
+                f"manifest_validate_status={manifest_validate_status}",
+                "pending=" + ",".join(dict.fromkeys(pending)),
+            ]
+        )
+        + "\n",
         encoding="utf-8",
     )
     print(f"wrote {OUT}: {status}")

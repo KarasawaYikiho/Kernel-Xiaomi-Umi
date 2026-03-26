@@ -125,6 +125,8 @@ def main() -> int:
     evidence_promoted: list[str] = []
 
     compare_required: set[str] = set()
+    if rom_ready:
+        compare_required.update({_normalize_item(x) for x in ROM_OPTIONAL_COMPARE})
     if ev.get("boot_local_path"):
         compare_required.add("rom_boot_chain_consistency")
     if ev.get("dtbo_local_path"):
@@ -186,22 +188,24 @@ def main() -> int:
     out_lines.append("# Driver integration manifest")
     out_lines.append("# Mark completed work with: integrated:<item>")
     out_lines.append("# Keep unfinished work as: pending:<item>")
-    out_lines.append("# Auto-synced by Tools/Porting/Sync_Driver_Integration_Manifest.py")
+    out_lines.append(
+        "# Auto-synced by Tools/Porting/Sync_Driver_Integration_Manifest.py"
+    )
     out_lines.append("")
     out_lines.append("# Core integration backlog")
-    for item in sorted({ _normalize_item(x) for x in BASE_REQUIRED }):
+    for item in sorted({_normalize_item(x) for x in BASE_REQUIRED}):
         prefix = "integrated" if item in integrated else "pending"
         out_lines.append(f"{prefix}:{item}")
 
     out_lines.append("")
     out_lines.append("# Reference driver alignment backlog")
-    for item in sorted({ _normalize_item(x) for x in REF_REQUIRED }):
+    for item in sorted({_normalize_item(x) for x in REF_REQUIRED}):
         prefix = "integrated" if item in integrated else "pending"
         out_lines.append(f"{prefix}:{item}")
 
     out_lines.append("")
     out_lines.append("# Official ROM validation backlog")
-    for item in sorted({ _normalize_item(x) for x in ROM_REQUIRED } | compare_required):
+    for item in sorted({_normalize_item(x) for x in ROM_REQUIRED} | compare_required):
         prefix = "integrated" if item in integrated else "pending"
         out_lines.append(f"{prefix}:{item}")
 
